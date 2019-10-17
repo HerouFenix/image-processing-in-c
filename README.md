@@ -8,5 +8,4 @@
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](https://github.com/heroufenix/image-processing-using-c
-/blob/master/LICENSE) file for more information
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/heroufenix/image-processing-using-c/blob/master/LICENSE) file for more information
