@@ -65,6 +65,7 @@ int save_to_file(char *file_name, GrayscaleImage *image)
     return 0;
 };
 
+//TO DO: VERIFY IF COMMENTS CAN BE PLACED ON ANY PLACE IN THE DOCUMENT OR WHATS THE DEAL WITH THAT!
 GrayscaleImage *load_file(char *file_name)
 {
     char image_type[8];
