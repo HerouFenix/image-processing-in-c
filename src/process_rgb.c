@@ -67,7 +67,7 @@ int save_to_file(char *file_name, RGBImage *image)
     return 0;
 };
 
-//TO DO: VERIFY IF ITS RGB & VALUE RANGE ARE ACCEPTABLE
+//TO DO: VERIFY IF COMMENTS CAN BE PLACED ON ANY PLACE IN THE DOCUMENT OR WHATS THE DEAL WITH THAT!
 RGBImage *load_file(char *file_name)
 {
     char image_type[8];
