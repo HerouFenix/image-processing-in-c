@@ -70,7 +70,8 @@ int save_to_file(char *file_name, RGBImage *image)
 //TO DO: VERIFY IF ITS RGB & VALUE RANGE ARE ACCEPTABLE
 RGBImage *load_file(char *file_name)
 {
-    char buff[255];
+    char image_type[8];
+    int colour_range, comments;
     FILE *fp;
     RGBImage *image;
 
@@ -81,7 +82,7 @@ RGBImage *load_file(char *file_name)
         exit(1);
     }
 
-    if (!fgets(buff, sizeof(buff), fp))
+    if ((!fgets(image_type, sizeof(image_type), fp)) && (image_type[0] != 'P' && image_type[1] != '6'))
     { //Get PPM Type (Goes from P0-P6)
         fprintf(stderr, "The PPM image file seems to be malformed\n");
         exit(1);
@@ -95,11 +96,18 @@ RGBImage *load_file(char *file_name)
         exit(1);
     }
 
-    if (fscanf(fp, "%s", buff) != 1)
-    { //Get colour range (should be 0-255)
-        fprintf(stderr, "The PPM image seems to have an invalid rgb range\n");
+    if ((fscanf(fp, "%d", &colour_range) != 1) && (colour_range != 255))
+    { //Get colour range (should be 255)
+        fprintf(stderr, "The PPM image seems to have an invalid rgb range - Should be 255\n");
         exit(1);
     }
+
+    while ((comments = getc(fp)) && (comments == '#')) //Remove comments (lines starting in #)
+    {
+        while (getc(fp) != '\n') //Get the entire line char by char until we find a breakline
+            ;
+    }
+    ungetc(comments, fp);   //If we break out of the last loop it's cus the current char isn't in a line starting with #, so we should unget it
 
     while (fgetc(fp) != '\n')
         ; //Remove blank spaces
