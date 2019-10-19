@@ -49,7 +49,7 @@ GrayscaleImage *load_file(char *file_name);
  * @param line The pixel's line (y position)
  * @param col The pixel's col (x position)
  ***********************************************/
-Grayscale access_pixel(GrayscaleImage *image, int line, int col);
+Grayscale get_pixel(GrayscaleImage *image, int line, int col);
 
 /********************************************/ /**
  * Function used to acess a subsection of image
