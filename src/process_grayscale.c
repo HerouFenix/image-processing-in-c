@@ -13,6 +13,11 @@ typedef struct
 } Grayscale;
 
 /// Structure used to represent Grayscale images
+/**
+ *  The way we chose to represent our pixels was through the use of an array of chars (1 byte structures). 
+ *  Instead of thinking of the image as a bidimensional array, we simply used a linear array noting that the image position can be given by the formula:
+ *  position = line*noOfColumns+column
+*/
 typedef struct
 {
     int width, height;
@@ -91,8 +96,7 @@ GrayscaleImage *load_file(char *file_name)
         while (getc(fp) != '\n') //Get the entire line char by char until we find a breakline
             ;
     }
-    ungetc(comments, fp);   //If we break out of the last loop it's cus the current char isn't in a line starting with #, so we should unget it
-
+    ungetc(comments, fp); //If we break out of the last loop it's cus the current char isn't in a line starting with #, so we should unget it
 
     image = (GrayscaleImage *)malloc(sizeof(GrayscaleImage)); //Allocate memory for our image struct
 
@@ -123,9 +127,19 @@ GrayscaleImage *load_file(char *file_name)
     return image;
 };
 
+Grayscale get_pixel(GrayscaleImage *image, int line, int col)
+{
+    int index = line * image->width + col; //The index of the pixel is given by the formula: pixel_line * no_columns + pixel_column
+    return image->pixel_array[index];
+}
+
 int main()
 {
     GrayscaleImage *image = load_file("../galaxy.ascii.pgm");
+
+    Grayscale pixel = get_pixel(image, image->width / 2, image->height / 2);
+    printf("Gray%d\n", pixel.Gray);
+
     save_to_file("galaxy.pgm", image);
     return 0;
 }
