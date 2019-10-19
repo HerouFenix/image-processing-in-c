@@ -148,9 +148,19 @@ GrayscaleImage *load_file(char *file_name)
     return image;
 };
 
+Grayscale get_pixel(GrayscaleImage *image, int line, int col)
+{
+    int index = line * image->width + col; //The index of the pixel is given by the formula: pixel_line * no_columns + pixel_column
+    return image->pixel_array[index];
+}
+
 int main()
 {
     GrayscaleImage *image = load_file("../galaxy.ascii.pgm");
+
+    Grayscale pixel = get_pixel(image, image->width / 2, image->height / 2);
+    printf("Gray%d\n", pixel.Gray);
+
     save_to_file("galaxy.pgm", image);
     return 0;
 }
