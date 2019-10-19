@@ -148,9 +148,9 @@ GrayscaleImage *load_file(char *file_name)
     return image;
 };
 
-Grayscale get_pixel(GrayscaleImage *image, int line, int col)
+Grayscale get_pixel(GrayscaleImage *image, int row, int col)
 {
-    int index = line * image->width + col; //The index of the pixel is given by the formula: pixel_line * no_columns + pixel_column
+    int index = row * image->width + col; //The index of the pixel is given by the formula: pixel_line * no_columns + pixel_column
     return image->pixel_array[index];
 }
 
