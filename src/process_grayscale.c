@@ -190,9 +190,18 @@ int main()
 {
     GrayscaleImage *image = load_file("../galaxy.ascii.pgm");
 
+    
+
+    int start[2], end[2];
+
+    start[0] = 482, start[1] = 0;
+    end[0] = 965, end[1] = 482;
+
     Grayscale pixel = get_pixel(image, image->width / 2, image->height / 2);
     printf("Gray%d\n", pixel.Gray);
 
+    GrayscaleImage *subsect = get_subsect(image, start, end);
+    save_to_file("subsection.ppm", subsect);
     save_to_file("galaxy.pgm", image);
     return 0;
 }
