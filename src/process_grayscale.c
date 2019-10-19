@@ -58,7 +58,7 @@ Grayscale get_pixel(GrayscaleImage *image, int line, int col);
  * @param pos_start An array containing the subsection's starting starting (left-top corner) x and y coordinates
  * @param pos_end An array containing the subsection's ending (bottom-right corner) x and y coordinates
  ***********************************************/
-GrayscaleImage get_subsection(GrayscaleImage *image, int pos_start[2], int pos_end[2]);
+GrayscaleImage *get_subsection(GrayscaleImage *image, int pos_start[2], int pos_end[2]);
 
 /********************************************/ /**
  *  FUNCTION DEFINITIONS
@@ -152,6 +152,38 @@ Grayscale get_pixel(GrayscaleImage *image, int line, int col)
 {
     int index = line * image->width + col; //The index of the pixel is given by the formula: pixel_line * no_columns + pixel_column
     return image->pixel_array[index];
+}
+
+GrayscaleImage *get_subsect(GrayscaleImage *image, int pos_start[2], int pos_end[2])
+{
+    //Verify that pos_start isn't infront of pos_end
+    if (pos_start[0] > pos_end[0] || pos_start[1] > pos_end[1])
+    {
+        fprintf(stderr, "ERROR: The starting position can't come after the ending position!\n");
+        exit(1);
+    }
+
+    int pixels_per_row, rows_travelled, subsection_offset, current_index_image;
+
+    GrayscaleImage *subsect = (GrayscaleImage *)malloc(sizeof(GrayscaleImage)); //Allocate memory for our image struct
+
+    subsect->width = pos_end[1] - pos_start[1] + 1;
+    subsect->height = pos_end[0] - pos_start[0] + 1;
+
+    subsect->pixel_array = (Grayscale *)malloc(sizeof(Grayscale) * subsect->width * subsect->height); //Allocate memory for image's pixels
+
+    pixels_per_row = pos_end[1] - pos_start[1] + 1; //Number of pixels that each row of the subsection is going to have
+    rows_travelled = 0;                             //Number of rows we've already travelled (we can't use the row variable because pos_start[0] might not always be 0!)
+
+    for (int row = pos_start[0]; row <= pos_end[0]; row++)
+    {
+        current_index_image = row * image->width + pos_start[1]; //Starting index of the current row's first pixel on the image's pixel array
+        subsection_offset = pixels_per_row * rows_travelled++;   //Offset of our subsections pixel_array (used so that we don't overwrite already written pixels)
+
+        memmove(subsect->pixel_array + subsection_offset, &image->pixel_array[current_index_image], pixels_per_row * sizeof(Grayscale)); //Copy from our image's pixel array to our subsection's pixel array
+    }
+
+    return subsect;
 }
 
 int main()
