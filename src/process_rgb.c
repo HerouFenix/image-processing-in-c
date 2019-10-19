@@ -160,7 +160,7 @@ int main()
 {
     RGBImage *image = load_file("../lena.ppm");
 
-    Colour pixel = get_pixel(image, image->width / 2, image->height / 2);
+    Colour pixel = get_pixel(image, 0, 0);
     printf("R%d G%d B%d\n", pixel.R, pixel.G, pixel.B);
 
     save_to_file("lena.ppm", image);
