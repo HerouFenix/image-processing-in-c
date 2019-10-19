@@ -14,7 +14,12 @@ typedef struct
     unsigned char B;
 } Colour;
 
-/// Structure used to save an RGB image
+/// Structure used to represent an RGB image
+/**
+ *  The way we chose to represent our pixels was through the use of an array of chars (1 byte structures). 
+ *  Instead of thinking of the image as a bidimensional array, we simply used a linear array noting that the image position can be given by the formula:
+ *  position = line*noOfColumns+column
+*/
 typedef struct
 {
     int width, height;
@@ -31,10 +36,10 @@ int save_to_file(char *file_name, RGBImage *image);
 RGBImage *load_file(char *file_name);
 
 ///Function used to acess a specific pixel within an RGB Image
-Colour access_pixel(RGBImage image, int line, int col);
+Colour get_pixel(RGBImage *image, int line, int col);
 
 ///Function used to acess a subsection of image
-RGBImage get_subsection(RGBImage image, int *pos_start, int *pos_end);
+RGBImage get_subsection(RGBImage *image, int *pos_start, int *pos_end);
 
 /********************************************/ /**
  *  FUNCTION DEFINITION
@@ -107,7 +112,7 @@ RGBImage *load_file(char *file_name)
         while (getc(fp) != '\n') //Get the entire line char by char until we find a breakline
             ;
     }
-    ungetc(comments, fp);   //If we break out of the last loop it's cus the current char isn't in a line starting with #, so we should unget it
+    ungetc(comments, fp); //If we break out of the last loop it's cus the current char isn't in a line starting with #, so we should unget it
 
     while (fgetc(fp) != '\n')
         ; //Remove blank spaces
@@ -124,9 +129,19 @@ RGBImage *load_file(char *file_name)
     return image;
 };
 
+Colour get_pixel(RGBImage *image, int line, int col)
+{
+    int index = line * image->width + col; //The index of the pixel is given by the formula: pixel_line * no_columns + pixel_column
+    return image->pixel_array[index];
+}
+
 int main()
 {
     RGBImage *image = load_file("../lena.ppm");
+
+    Colour pixel = get_pixel(image, image->width / 2, image->height / 2);
+    printf("R%d G%d B%d\n", pixel.R, pixel.G, pixel.B);
+
     save_to_file("lena.ppm", image);
     return 0;
 }
