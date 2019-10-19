@@ -22,17 +22,38 @@ typedef struct
 /********************************************/ /**
  *  FUNCTION DECLARATIONS
  ***********************************************/
-///Function used to save a Grayscale image to a file
+/********************************************/ /**
+ * Function used to save a Grayscale image to a file
+ *
+ * @param file_name The File's path on which we'll be saving the image
+ * @param image The Grayscale Image we want to save
+ ***********************************************/
 int save_to_file(char *file_name, GrayscaleImage *image);
 
-///Function used to load a Grayscale image
+/********************************************/ /**
+ * Function used to load a Grayscale image
+ *
+ * @param file_name The File's path containing a Grayscale Image (PGM - P5)
+ ***********************************************/
 GrayscaleImage *load_file(char *file_name);
 
-///Function used to acess a specific pixel within a Grayscale Image
-Grayscale access_pixel(GrayscaleImage image, int line, int col);
+/********************************************/ /**
+ * Function used to acess a specific pixel within a Grayscale Image
+ *
+ * @param image The Grayscale image we want to subsect
+ * @param line The pixel's line (y position)
+ * @param col The pixel's col (x position)
+ ***********************************************/
+Grayscale access_pixel(GrayscaleImage *image, int line, int col);
 
-///Function used to acess a subsection of image
-GrayscaleImage get_subsection(GrayscaleImage image, int *pos_start, int *pos_end);
+/********************************************/ /**
+ * Function used to acess a subsection of image
+ *
+ * @param image The Grayscale image we want to subsect
+ * @param pos_start An array containing the subsection's starting starting (left-top corner) x and y coordinates
+ * @param pos_end An array containing the subsection's ending (bottom-right corner) x and y coordinates
+ ***********************************************/
+GrayscaleImage get_subsection(GrayscaleImage *image, int pos_start[2], int pos_end[2]);
 
 /********************************************/ /**
  *  FUNCTION DEFINITIONS
@@ -91,8 +112,7 @@ GrayscaleImage *load_file(char *file_name)
         while (getc(fp) != '\n') //Get the entire line char by char until we find a breakline
             ;
     }
-    ungetc(comments, fp);   //If we break out of the last loop it's cus the current char isn't in a line starting with #, so we should unget it
-
+    ungetc(comments, fp); //If we break out of the last loop it's cus the current char isn't in a line starting with #, so we should unget it
 
     image = (GrayscaleImage *)malloc(sizeof(GrayscaleImage)); //Allocate memory for our image struct
 

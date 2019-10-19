@@ -24,17 +24,38 @@ typedef struct
 /********************************************/ /**
  *  FUNCTION DECLARATIONS
  ***********************************************/
-///Function used to save an RGB image to a file
+/********************************************/ /**
+ * Function used to save an RGB image to a file
+ *
+ * @param file_name The File's path on which we'll be saving the image
+ * @param image The RGB Image we want to save
+ ***********************************************/
 int save_to_file(char *file_name, RGBImage *image);
 
-///Function used to load an RGB image
+/********************************************/ /**
+ * Function used to load an RGB image from a file
+ *
+ * @param file_name The File's path on which we'll be saving the image
+ ***********************************************/
 RGBImage *load_file(char *file_name);
 
-///Function used to acess a specific pixel within an RGB Image
-Colour access_pixel(RGBImage image, int line, int col);
+/********************************************/ /**
+ * Function used to access a specific pixel within an RGB image
+ *
+ * @param image The RGB Image we want to save
+ * @param line The pixel's line (y position)
+ * @param col The pixel's col (x position)e
+ ***********************************************/
+Colour access_pixel(RGBImage *image, int line, int col);
 
-///Function used to acess a subsection of image
-RGBImage get_subsection(RGBImage image, int *pos_start, int *pos_end);
+/********************************************/ /**
+ * Function used to acess a subsection of image
+ *
+ * @param image The Grayscale image we want to subsect
+ * @param pos_start An array containing the subsection's starting starting (left-top corner) x and y coordinates
+ * @param pos_end An array containing the subsection's ending (bottom-right corner) x and y coordinates
+ ***********************************************/
+RGBImage get_subsection(RGBImage *image, int *pos_start, int *pos_end);
 
 /********************************************/ /**
  *  FUNCTION DEFINITION
