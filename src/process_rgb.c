@@ -74,7 +74,7 @@ int save_to_file(char *file_name, RGBImage *image)
     fp = fopen(file_name, "wb"); //Open File
     if (!fp)
     {
-        fprintf(stderr, "An error occurred finding the file '%s'\n", file_name);
+        fprintf(stderr, "ERROR: An error occurred finding the file '%s'\n", file_name);
         return 1;
     }
 
@@ -104,13 +104,13 @@ RGBImage *load_file(char *file_name)
     fp = fopen(file_name, "rb"); //Open File
     if (!fp)
     {
-        fprintf(stderr, "An error occurred finding the file '%s'\n", file_name);
+        fprintf(stderr, "ERROR: An error occurred finding the file '%s'\n", file_name);
         exit(1);
     }
 
     if ((!fgets(image_type, sizeof(image_type), fp)) && (image_type[0] != 'P' && image_type[1] != '6'))
     { //Get PPM Type (Goes from P0-P6)
-        fprintf(stderr, "The PPM image file seems to be malformed\n");
+        fprintf(stderr, "ERROR: The PPM image file seems to be malformed\n");
         exit(1);
     }
 
@@ -118,13 +118,13 @@ RGBImage *load_file(char *file_name)
 
     if (fscanf(fp, "%d %d", &image->width, &image->height) != 2)
     { //Get Size (WIDTHxHEIGHT)
-        fprintf(stderr, "The PPM image seems to have an invalid image size (Should be Width x Height)\n");
+        fprintf(stderr, "ERROR: The PPM image seems to have an invalid image size (Should be Width x Height)\n");
         exit(1);
     }
 
     if ((fscanf(fp, "%d", &colour_range) != 1) && (colour_range != 255))
     { //Get colour range (should be 255)
-        fprintf(stderr, "The PPM image seems to have an invalid rgb range - Should be 255\n");
+        fprintf(stderr, "ERROR: The PPM image seems to have an invalid rgb range - Should be 255\n");
         exit(1);
     }
 
@@ -142,7 +142,7 @@ RGBImage *load_file(char *file_name)
 
     if (fread(image->pixel_array, 3 * image->width, image->height, fp) != image->height)
     { //Read all remaining data from the image (we multiply the width by 3 because each pixel holds 3 chars - r,g,b)
-        fprintf(stderr, "At least one line couldn't be read from the image\n");
+        fprintf(stderr, "ERROR: At least one line couldn't be read from the image\n");
         exit(1);
     }
 
@@ -158,6 +158,12 @@ Colour get_pixel(RGBImage *image, int line, int col)
 
 RGBImage *get_subsect(RGBImage *image, int pos_start[2], int pos_end[2])
 {
+    //Verify that pos_start isn't infront of pos_end
+    if(pos_start[0] > pos_end[0] || pos_start[1] > pos_end[1]){
+        fprintf(stderr, "ERROR: The starting position can't come after the ending position!\n");
+        exit(1);
+    }
+
     int pixels_per_row, rows_travelled, subsection_offset, current_index_image;
 
     RGBImage *subsect = (RGBImage *)malloc(sizeof(RGBImage)); //Allocate memory for our image struct

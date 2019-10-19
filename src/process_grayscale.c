@@ -72,7 +72,7 @@ int save_to_file(char *file_name, GrayscaleImage *image)
     fp = fopen(file_name, "wb"); //Open File
     if (!fp)
     {
-        fprintf(stderr, "An error occurred finding the file '%s'\n", file_name);
+        fprintf(stderr, "ERROR: An error occurred finding the file '%s'\n", file_name);
         return 1;
     }
 
@@ -102,13 +102,13 @@ GrayscaleImage *load_file(char *file_name)
     fp = fopen(file_name, "rb"); //Open File
     if (!fp)
     {
-        fprintf(stderr, "An error occurred finding the file '%s'\n", file_name);
+        fprintf(stderr, "ERROR: An error occurred finding the file '%s'\n", file_name);
         exit(1);
     }
 
     if ((!fgets(image_type, sizeof(image_type), fp)) && (image_type[0] != 'P' && image_type[1] != '5'))
     { //Get PPM Type (Goes from P0-P6)
-        fprintf(stderr, "The PGM image file seems to be malformed or is incorrect - Should be P5\n");
+        fprintf(stderr, "ERROR: The PGM image file seems to be malformed or is incorrect - Should be P5\n");
         exit(1);
     }
 
@@ -123,13 +123,13 @@ GrayscaleImage *load_file(char *file_name)
 
     if (fscanf(fp, "%d %d", &image->width, &image->height) != 2)
     { //Get Size (WIDTHxHEIGHT)
-        fprintf(stderr, "The PGM image seems to have an invalid image size (Should be Width x Height)\n");
+        fprintf(stderr, "ERROR: The PGM image seems to have an invalid image size (Should be Width x Height)\n");
         exit(1);
     }
 
     if ((fscanf(fp, "%d", &colour_range) != 1) && (colour_range != 255))
     { //Get colour range (should be 255)
-        fprintf(stderr, "The PGM image seems to have an invalid grayscale range - Should be 255\n");
+        fprintf(stderr, "ERROR: The PGM image seems to have an invalid grayscale range - Should be 255\n");
         exit(1);
     }
 
@@ -140,7 +140,7 @@ GrayscaleImage *load_file(char *file_name)
 
     if (fread(image->pixel_array, image->width, image->height, fp) != image->height)
     { //Read all remaining data from the image (Remember each grayscale pixel is just a value from 0-255)
-        fprintf(stderr, "At least one line couldn't be read from the image\n");
+        fprintf(stderr, "ERROR: At least one line couldn't be read from the image\n");
         exit(1);
     }
 
