@@ -13,6 +13,11 @@ typedef struct
 } Grayscale;
 
 /// Structure used to represent Grayscale images
+/**
+ *  The way we chose to represent our pixels was through the use of an array of chars (1 byte structures). 
+ *  Instead of thinking of the image as a bidimensional array, we simply used a linear array noting that the image position can be given by the formula:
+ *  position = line*noOfColumns+column
+*/
 typedef struct
 {
     int width, height;
