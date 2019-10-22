@@ -1,44 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <process_binary.h>
 
-/********************************************/ /**
- *  STRUCTURE DECLARATIONS
- ***********************************************/
-/// Structure used to represent Binary images
-/**
- *  The way we chose to represent our bits was through the use of an array of chars (1 byte structures). 
- *  Instead of thinking of the image as a bidimensional array, we simply used a linear array noting that the image position can be given by the formula:
- *  position = line*noOfColumns+column
-*/
-typedef struct
-{
-    int height, width;
-    unsigned char *bin_array;
-} BinaryImage;
 
-/********************************************/ /**
- *  FUNCTION DECLARATIONS
- ***********************************************/
-///Function used to save a Binary image to a file
-int save_to_file(char *file_name, BinaryImage *image);
+unsigned char access_pixel(BinaryImage *image, int line, int col){
+    return *(image->bin_array + (line*image->width + col));
+}
 
-/********************************************/ /**
- * Function used to load a Binary image
- *
- * @param file_name The File's path containing a Binary Image (PBM - P4)
- ***********************************************/
-BinaryImage* load_file(char *file_name);
-
-///Function used to acess a specific pixel within a Binary Image
-unsigned char access_pixel(BinaryImage image, int line, int col);
-
-///Function used to acess a subsection of image
-BinaryImage get_subsection(BinaryImage image, int *pos_start, int *pos_end);
-
-/********************************************/ /**
- *  FUNCTION DEFINITIONS
- ***********************************************/
 int save_to_file(char *file_name, BinaryImage *image){
     FILE *fp;
 
@@ -94,7 +63,7 @@ BinaryImage* load_file(char *file_name){
     while (fgetc(fp) != '\n')
         ; //Remove blank spaces
 
-    fread(image->bin_array, image->width, image->height, fp);
+    fread(image->bin_array, 1, image->height*image->width, fp);
 
    /* int error;
     if ((error = fread(image->bin_array, image->width, image->height, fp)) != image->height)
@@ -109,6 +78,13 @@ BinaryImage* load_file(char *file_name){
 
 int main()
 {
-	BinaryImage *image = load_file("../marbles.pbm");
-    return save_to_file("marbles.pbm", image);
+	BinaryImage *image = load_file("../apollonian_gasket.pbm");
+    int i, j;
+    for (i = 0; i < image->height; i++){
+        for (j = 0; j < image->width; j++){
+            printf("%u", access_pixel(image, i, j));
+        }
+        printf("\n");
+    }
+    return save_to_file("apollonian_gasket.pbm", image);
 }
