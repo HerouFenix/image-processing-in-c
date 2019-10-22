@@ -36,4 +36,4 @@ BinaryImage* load_file(char *file_name);
 unsigned char access_pixel(BinaryImage *image, int line, int col);
 
 ///Function used to acess a subsection of image
-BinaryImage get_subsection(BinaryImage image, int *pos_start, int *pos_end);
+BinaryImage *get_subsection(BinaryImage *image, int *pos_start, int *pos_end);
