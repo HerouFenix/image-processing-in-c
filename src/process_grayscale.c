@@ -2,68 +2,12 @@
 #include <stdlib.h>
 #include <string.h>
 
-/********************************************/ /**
- *  STRUCTURE DECLARATIONS
- ***********************************************/
-/// Structure used to represent Grayscale values
-/// Unsigned Char since we only need to specify values from 0 to 255, which can be done with 1 byte (which corresponds to the size of an unsigned char)
-typedef struct
-{
-    unsigned char Gray;
-} Grayscale;
-
-/// Structure used to represent Grayscale images
-/**
- *  The way we chose to represent our pixels was through the use of an array of chars (1 byte structures). 
- *  Instead of thinking of the image as a bidimensional array, we simply used a linear array noting that the image position can be given by the formula:
- *  position = line*noOfColumns+column
-*/
-typedef struct
-{
-    int width, height;
-    Grayscale *pixel_array;
-} GrayscaleImage;
-
-/********************************************/ /**
- *  FUNCTION DECLARATIONS
- ***********************************************/
-/********************************************/ /**
- * Function used to save a Grayscale image to a file
- *
- * @param file_name The File's path on which we'll be saving the image
- * @param image The Grayscale Image we want to save
- ***********************************************/
-int save_to_file(char *file_name, GrayscaleImage *image);
-
-/********************************************/ /**
- * Function used to load a Grayscale image
- *
- * @param file_name The File's path containing a Grayscale Image (PGM - P5)
- ***********************************************/
-GrayscaleImage *load_file(char *file_name);
-
-/********************************************/ /**
- * Function used to acess a specific pixel within a Grayscale Image
- *
- * @param image The Grayscale image we want to subsect
- * @param line The pixel's line (y position)
- * @param col The pixel's col (x position)
- ***********************************************/
-Grayscale get_pixel(GrayscaleImage *image, int line, int col);
-
-/********************************************/ /**
- * Function used to acess a subsection of image
- *
- * @param image The Grayscale image we want to subsect
- * @param pos_start An array containing the subsection's starting starting (left-top corner) x and y coordinates
- * @param pos_end An array containing the subsection's ending (bottom-right corner) x and y coordinates
- ***********************************************/
-GrayscaleImage *get_subsection(GrayscaleImage *image, int pos_start[2], int pos_end[2]);
+#include "process_grayscale.h"
 
 /********************************************/ /**
  *  FUNCTION DEFINITIONS
  ***********************************************/
-int save_to_file(char *file_name, GrayscaleImage *image)
+int save_grayscale_to_file(char *file_name, GrayscaleImage *image)
 {
     FILE *fp;
     int width, height, colour_range;
@@ -92,7 +36,7 @@ int save_to_file(char *file_name, GrayscaleImage *image)
 };
 
 //TO DO: VERIFY IF COMMENTS CAN BE PLACED ON ANY PLACE IN THE DOCUMENT OR WHATS THE DEAL WITH THAT!
-GrayscaleImage *load_file(char *file_name)
+GrayscaleImage *load_grayscale_file(char *file_name)
 {
     char image_type[8];
     int comments, colour_range = 0;
@@ -148,13 +92,13 @@ GrayscaleImage *load_file(char *file_name)
     return image;
 };
 
-Grayscale get_pixel(GrayscaleImage *image, int row, int col)
+Grayscale get_grayscale_pixel(GrayscaleImage *image, int row, int col)
 {
     int index = row * image->width + col; //The index of the pixel is given by the formula: pixel_line * no_columns + pixel_column
     return image->pixel_array[index];
 }
 
-GrayscaleImage *get_subsect(GrayscaleImage *image, int pos_start[2], int pos_end[2])
+GrayscaleImage *get_grayscale_subsection(GrayscaleImage *image, int pos_start[2], int pos_end[2])
 {
     //Verify that pos_start isn't infront of pos_end
     if (pos_start[0] > pos_end[0] || pos_start[1] > pos_end[1])
@@ -186,9 +130,10 @@ GrayscaleImage *get_subsect(GrayscaleImage *image, int pos_start[2], int pos_end
     return subsect;
 }
 
+/*
 int main()
 {
-    GrayscaleImage *image = load_file("../galaxy.ascii.pgm");
+    GrayscaleImage *image = load_grayscale_file("../galaxy.ascii.pgm");
 
     
 
@@ -197,11 +142,12 @@ int main()
     start[0] = 482, start[1] = 0;
     end[0] = 965, end[1] = 482;
 
-    Grayscale pixel = get_pixel(image, image->width / 2, image->height / 2);
+    Grayscale pixel = get_grayscale_pixel(image, image->width / 2, image->height / 2);
     printf("Gray%d\n", pixel.Gray);
 
-    GrayscaleImage *subsect = get_subsect(image, start, end);
-    save_to_file("subsection.ppm", subsect);
-    save_to_file("galaxy.pgm", image);
+    GrayscaleImage *subsect = get_grayscale_subsection(image, start, end);
+    save_grayscale_to_file("subsection.ppm", subsect);
+    save_grayscale_to_file("galaxy.pgm", image);
     return 0;
 }
+*/

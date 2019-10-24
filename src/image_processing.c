@@ -2,203 +2,15 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "process_rgb.h"
+#include "process_grayscale.h"
+#include "image_processing.h"
 
-typedef struct
-{
-    unsigned char R;
-    unsigned char G;
-    unsigned char B;
-} Colour;
-
-typedef struct
-{
-    int width, height;
-    Colour *pixel_array;
-} RGBImage;
-
-typedef struct
-{
-    unsigned char Gray;
-} Grayscale;
-
-typedef struct
-{
-    int width, height;
-    Grayscale *pixel_array;
-} GrayscaleImage;
 
 
 /********************************************//**
  *  FUNCTION DEFINITIONS
  ***********************************************/
-int save_grayscale_to_file(char *file_name, GrayscaleImage *image)
-{
-    FILE *fp;
-    int width, height, colour_range;
-    char *img_type;
-
-    fp = fopen(file_name, "wb"); //Open File
-    if (!fp)
-    {
-        fprintf(stderr, "ERROR: An error occurred finding the file '%s'\n", file_name);
-        return 1;
-    }
-
-    img_type = "P5";
-    height = image->height, width = image->width, colour_range = 255;
-
-    //Write the PPM's headers
-    fprintf(fp, "%s\n", img_type);
-    fprintf(fp, "%d %d\n", width, height);
-    fprintf(fp, "%d\n", colour_range);
-
-    //Write the image's pixels
-    fwrite(image->pixel_array, width, height, fp);
-
-    fclose(fp);
-    return 0;
-};
-
-GrayscaleImage *load_grayscale_file(char *file_name)
-{
-    char image_type[8];
-    int comments, colour_range = 0;
-    FILE *fp;
-    GrayscaleImage *image;
-
-    fp = fopen(file_name, "rb"); //Open File
-    if (!fp)
-    {
-        fprintf(stderr, "ERROR: An error occurred finding the file '%s'\n", file_name);
-        exit(1);
-    }
-
-    if ((!fgets(image_type, sizeof(image_type), fp)) && (image_type[0] != 'P' && image_type[1] != '5'))
-    { //Get PPM Type (Goes from P0-P6)
-        fprintf(stderr, "ERROR: The PGM image file seems to be malformed or is incorrect - Should be P5\n");
-        exit(1);
-    }
-
-    while ((comments = getc(fp)) && (comments == '#')) //Remove comments (lines starting in #)
-    {
-        while (getc(fp) != '\n') //Get the entire line char by char until we find a breakline
-            ;
-    }
-    ungetc(comments, fp); //If we break out of the last loop it's cus the current char isn't in a line starting with #, so we should unget it
-
-    image = (GrayscaleImage *)malloc(sizeof(GrayscaleImage)); //Allocate memory for our image struct
-
-    if (fscanf(fp, "%d %d", &image->width, &image->height) != 2)
-    { //Get Size (WIDTHxHEIGHT)
-        fprintf(stderr, "ERROR: The PGM image seems to have an invalid image size (Should be Width x Height)\n");
-        exit(1);
-    }
-
-    if ((fscanf(fp, "%d", &colour_range) != 1) && (colour_range != 255))
-    { //Get colour range (should be 255)
-        fprintf(stderr, "ERROR: The PGM image seems to have an invalid grayscale range - Should be 255\n");
-        exit(1);
-    }
-
-    while (fgetc(fp) != '\n')
-        ; //Remove blank spaces
-
-    image->pixel_array = (Grayscale *)malloc(sizeof(Grayscale) * image->width * image->height); //Allocate memory for image's pixels
-
-    if (fread(image->pixel_array, image->width, image->height, fp) != image->height)
-    { //Read all remaining data from the image (Remember each grayscale pixel is just a value from 0-255)
-        fprintf(stderr, "ERROR: At least one line couldn't be read from the image\n");
-        exit(1);
-    }
-
-    fclose(fp);
-    return image;
-};
-
-int save_rgb_to_file(char *file_name, RGBImage *image)
-{
-    FILE *fp;
-    int width, height, colour_range;
-    char *img_type;
-
-    fp = fopen(file_name, "wb"); //Open File
-    if (!fp)
-    {
-        fprintf(stderr, "ERROR: An error occurred finding the file '%s'\n", file_name);
-        return 1;
-    }
-
-    img_type = "P6";
-    height = image->height, width = image->width, colour_range = 255;
-
-    //Write the PPM's headers
-    fprintf(fp, "%s\n", img_type);
-    fprintf(fp, "%d %d\n", width, height);
-    fprintf(fp, "%d\n", colour_range);
-
-    //Write the image's pixels
-    fwrite(image->pixel_array, 3 * width, height, fp);
-
-    fclose(fp);
-    return 0;
-};
-
-RGBImage *load_rgb_file(char *file_name)
-{
-    char image_type[8];
-    int colour_range, comments;
-    FILE *fp;
-    RGBImage *image;
-
-    fp = fopen(file_name, "rb"); //Open File
-    if (!fp)
-    {
-        fprintf(stderr, "ERROR: An error occurred finding the file '%s'\n", file_name);
-        exit(1);
-    }
-
-    if ((!fgets(image_type, sizeof(image_type), fp)) && (image_type[0] != 'P' && image_type[1] != '6'))
-    { //Get PPM Type (Goes from P0-P6)
-        fprintf(stderr, "ERROR: The PPM image file seems to be malformed\n");
-        exit(1);
-    }
-
-    image = (RGBImage *)malloc(sizeof(RGBImage)); //Allocate memory for our image struct
-
-    if (fscanf(fp, "%d %d", &image->width, &image->height) != 2)
-    { //Get Size (WIDTHxHEIGHT)
-        fprintf(stderr, "ERROR: The PPM image seems to have an invalid image size (Should be Width x Height)\n");
-        exit(1);
-    }
-
-    if ((fscanf(fp, "%d", &colour_range) != 1) && (colour_range != 255))
-    { //Get colour range (should be 255)
-        fprintf(stderr, "ERROR: The PPM image seems to have an invalid rgb range - Should be 255\n");
-        exit(1);
-    }
-
-    while ((comments = getc(fp)) && (comments == '#')) //Remove comments (lines starting in #)
-    {
-        while (getc(fp) != '\n') //Get the entire line char by char until we find a breakline
-            ;
-    }
-    ungetc(comments, fp); //If we break out of the last loop it's cus the current char isn't in a line starting with #, so we should unget it
-
-    while (fgetc(fp) != '\n')
-        ; //Remove blank spaces
-
-    image->pixel_array = (Colour *)malloc(sizeof(Colour) * image->width * image->height); //Allocate memory for image's pixels
-
-    if (fread(image->pixel_array, 3 * image->width, image->height, fp) != image->height)
-    { //Read all remaining data from the image (we multiply the width by 3 because each pixel holds 3 chars - r,g,b)
-        fprintf(stderr, "ERROR: At least one line couldn't be read from the image\n");
-        exit(1);
-    }
-
-    fclose(fp);
-    return image;
-};
-
 GrayscaleImage* convert_rgb_to_grayscale(RGBImage *rgb_image){
     GrayscaleImage *gray_img;
     Grayscale gray;
@@ -224,7 +36,7 @@ GrayscaleImage* convert_rgb_to_grayscale(RGBImage *rgb_image){
     return gray_img;
 }
 
-// DISCUTIR COM O PEDRO, MIGHT BE A BETTER WAY, isto tem mt codigo repetido, maybe usar uma função de suporte?
+
 GrayscaleImage** convert_rgb_to_three_grayscale(RGBImage *rgb_image){
     GrayscaleImage **gray_images;
     GrayscaleImage *gray_img_r, *gray_img_g, *gray_img_b;
