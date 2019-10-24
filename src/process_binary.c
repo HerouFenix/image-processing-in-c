@@ -13,7 +13,7 @@ BinaryImage* get_bin_subsection(BinaryImage *image, int *pos_start, int *pos_end
     new_image -> bin_array = (unsigned char *)malloc(new_image->height * new_image-> width);
     int i;
     for (i = 0; i < new_image->height; i++){
-        memmove(new_image->bin_array + i*new_image->width,
+        memcpy(new_image->bin_array + i*new_image->width,
                 image->bin_array + (pos_start[0]+i)*image->width + pos_start[1],
                 new_image->width * sizeof(unsigned char));
     }
@@ -94,13 +94,13 @@ BinaryImage* load_bin_file(char *file_name){
     fclose(fp);
     return image;
 }
-
+/*
 int main()
 {
-	BinaryImage *image = load_bin_file("../apollonian_gasket.pbm");
-    int start[] = {0,0}, end[] = {299,599};
-    int start_2[] = {299,0}, end_2[] = {599, 599};
-    save_to_bin_file("subsection_ag.pbm", get_bin_subsection(image,start_2,end_2));
-    save_to_bin_file("subsection_ag_2.pbm", get_bin_subsection(image,start,end));
+	BinaryImage *image = load_bin_file("../marbles.pbm");
+    int start[] = {0,3}, end[] = {image->height/2,image->width - 1};
+    //int start_2[] = {0,0}, end_2[] = {450, 450};
+    save_to_bin_file("subsection_ag.pbm", get_bin_subsection(image,start,end));
+    //save_to_bin_file("subsection_ag_2.pbm", get_bin_subsection(image,start_2,end_2));
     return save_to_bin_file("apollonian_gasket.pbm", image);
-}
+}*/

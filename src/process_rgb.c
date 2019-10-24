@@ -129,6 +129,7 @@ RGBImage *get_rgb_subsection(RGBImage *image, int pos_start[2], int pos_end[2])
     return subsect;
 }
 
+/*
 int main()
 {
     RGBImage *image = load_rgb_file("../lena.ppm");
@@ -146,3 +147,4 @@ int main()
     save_rgb_to_file("lena.ppm", image);
     return 0;
 }
+*/
