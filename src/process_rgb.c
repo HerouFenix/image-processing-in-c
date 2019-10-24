@@ -175,7 +175,7 @@ RGBImage *get_subsect(RGBImage *image, int pos_start[2], int pos_end[2])
 
     pixels_per_row = pos_end[1] - pos_start[1] + 1; //Number of pixels that each row of the subsection is going to have
     rows_travelled = 0;                             //Number of rows we've already travelled (we can't use the row variable because pos_start[0] might not always be 0!)
-
+    
     for (int row = pos_start[0]; row <= pos_end[0]; row++)
     {
         current_index_image = row * image->width + pos_start[1]; //Starting index of the current row's first pixel on the image's pixel array

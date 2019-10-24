@@ -17,14 +17,14 @@ typedef struct
  *  FUNCTION DECLARATIONS
  ***********************************************/
 ///Function used to save a Binary image to a file
-int save_to_file(char *file_name, BinaryImage *image);
+int save_to_bin_file(char *file_name, BinaryImage *image);
 
 /********************************************/ /**
  * Function used to load a Binary image
  *
  * @param file_name The File's path containing a Binary Image (PBM - P4)
  ***********************************************/
-BinaryImage* load_file(char *file_name);
+BinaryImage* load_bin_file(char *file_name);
 
 /********************************************/ /**
  * Function used to acess a specific pixel within a Binary Image
@@ -33,7 +33,7 @@ BinaryImage* load_file(char *file_name);
  * @param line The y coordinate for our bit
  * @param col The x coordinate
 ************************************************/
-unsigned char access_pixel(BinaryImage *image, int line, int col);
+unsigned char access_bin_pixel(BinaryImage *image, int line, int col);
 
 ///Function used to acess a subsection of image
-BinaryImage *get_subsection(BinaryImage *image, int *pos_start, int *pos_end);
+BinaryImage *get_bin_subsection(BinaryImage *image, int *pos_start, int *pos_end);
