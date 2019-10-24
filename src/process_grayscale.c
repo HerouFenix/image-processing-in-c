@@ -130,11 +130,10 @@ GrayscaleImage *get_grayscale_subsection(GrayscaleImage *image, int pos_start[2]
     return subsect;
 }
 
+/*
 int main()
 {
     GrayscaleImage *image = load_grayscale_file("../galaxy.ascii.pgm");
-
-    
 
     int start[2], end[2];
 
@@ -149,3 +148,4 @@ int main()
     save_grayscale_to_file("galaxy.pgm", image);
     return 0;
 }
+*/
