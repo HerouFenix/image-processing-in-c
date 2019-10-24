@@ -81,7 +81,7 @@ GrayscaleImage** convert_rgb_to_three_grayscale(RGBImage *rgb_image){
     return gray_images;
 }
 
-
+RGB
 int main()
 {
     RGBImage *image = load_rgb_file("../lena.ppm");
