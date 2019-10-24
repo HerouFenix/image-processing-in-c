@@ -2,16 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-/********************************************//**
- *  STRUCTURE DECLARATIONS
- ***********************************************/
-
-
-
-/********************************************//**
- *  FUNCTION DECLARATIONS
- ***********************************************/
-
+#include "process_rgb.h"
+#include "process_grayscale.h"
+#include "image_processing.h"
 
 
 
