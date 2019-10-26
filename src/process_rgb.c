@@ -94,6 +94,14 @@ RGBImage *load_rgb_file(char *file_name)
 
 Colour get_rgb_pixel(RGBImage *image, int row, int col)
 {
+    if(row > image->height || col > image->width || row < 0 || col < 0){
+        Colour null_pixel;
+        null_pixel.R = 0;
+        null_pixel.G = 0;
+        null_pixel.B = 0;
+
+        return null_pixel;
+    }
     int index = row * image->width + col; //The index of the pixel is given by the formula: pixel_line * no_columns + pixel_column
     return image->pixel_array[index];
 }

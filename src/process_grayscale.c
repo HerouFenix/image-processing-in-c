@@ -94,6 +94,13 @@ GrayscaleImage *load_grayscale_file(char *file_name)
 
 Grayscale get_grayscale_pixel(GrayscaleImage *image, int row, int col)
 {
+    if(row > image->height || col > image->width || row < 0 || col < 0){
+        Grayscale null_pixel;
+        null_pixel.Gray = 0;
+
+        return null_pixel;
+    }
+
     int index = row * image->width + col; //The index of the pixel is given by the formula: pixel_line * no_columns + pixel_column
     return image->pixel_array[index];
 }

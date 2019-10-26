@@ -42,10 +42,12 @@ RGBImage *load_rgb_file(char *file_name);
 
 /********************************************/ /**
  * Function used to access a specific pixel within an RGB image
+ * If a row or col that goes outside the image's bounds is given,
+ * the function returns a Null_Pixel (an RGB Pixel with all it's values set to 0)
  *
  * @param image The RGB Image we want to save
- * @param line The pixel's line (y position)
- * @param col The pixel's col (x position)e
+ * @param row The pixel's row
+ * @param col The pixel's column
  ***********************************************/
 Colour get_rgb_pixel(RGBImage *image, int line, int col);
 
