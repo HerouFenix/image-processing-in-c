@@ -87,7 +87,7 @@ int apply_rgb_filter(RGBImage *image, double *kernel, int filter_dimension[2])
         return 1;
     }
 
-    int row_offset, col_offset, current_pixel_index, image_row, subsection_row, kernel_row, image_col, subsection_col, kernel_col;
+    int row_offset, col_offset, current_pixel_index, image_row, subsection_row, kernel_row, image_col, subsection_col, kernel_col, new_red, new_green, new_blue;
     Colour new_pixel, current_pixel;
     Colour *new_pixel_array;
 
@@ -107,23 +107,58 @@ int apply_rgb_filter(RGBImage *image, double *kernel, int filter_dimension[2])
             new_pixel.G = 0;
             new_pixel.B = 0;
 
+            new_red = 0;
+            new_green = 0;
+            new_blue = 0;
+
             //Iterate over a subsection of the image around the current (central) pixel
-            for (subsection_row = image_row - row_offset; subsection_row < image_row + row_offset; subsection_row++)
+            kernel_row = 0;
+            for (subsection_row = image_row - row_offset; subsection_row <= image_row + row_offset; subsection_row++)
             {
-                kernel_row = 0;
-                for (subsection_col = image_col - col_offset; subsection_col < image_col + col_offset; subsection_col++)
+                kernel_col = 0;
+                for (subsection_col = image_col - col_offset; subsection_col <= image_col + col_offset; subsection_col++)
                 {
-                    kernel_col = 0;
                     current_pixel = get_rgb_pixel(image, subsection_row, subsection_col); //Our pixel in the original
 
-                    new_pixel.R += current_pixel.R * kernel[kernel_row * image->width + kernel_col];
-                    new_pixel.G += current_pixel.G * kernel[kernel_row * image->width + kernel_col];
-                    new_pixel.B += current_pixel.B * kernel[kernel_row * image->width + kernel_col];
+                    new_red += current_pixel.R * kernel[kernel_row * filter_dimension[1] + kernel_col];
+                    new_green += current_pixel.G * kernel[kernel_row * filter_dimension[1] + kernel_col];
+                    new_blue += current_pixel.B * kernel[kernel_row * filter_dimension[1] + kernel_col];
 
                     kernel_col++;
                 }
                 kernel_row++;
             }
+
+            if (new_red > 255)
+            {
+                new_red = 255;
+            }
+            else if (new_red < 0)
+            {
+                new_red = 0;
+            }
+
+            if (new_green > 255)
+            {
+                new_green = 255;
+            }
+            else if (new_green < 0)
+            {
+                new_green = 0;
+            }
+
+            if (new_blue > 255)
+            {
+                new_blue = 255;
+            }
+            else if (new_blue < 0)
+            {
+                new_blue = 0;
+            }
+
+            new_pixel.R = new_red;
+            new_pixel.G = new_green;
+            new_pixel.B = new_blue;
 
             new_pixel_array[current_pixel_index++] = new_pixel;
         }
@@ -142,7 +177,7 @@ int apply_grayscale_filter(GrayscaleImage *image, double *kernel, int filter_dim
         return 1;
     }
 
-    int row_offset, col_offset, current_pixel_index, image_row, subsection_row, kernel_row, image_col, subsection_col, kernel_col;
+    int row_offset, col_offset, current_pixel_index, image_row, subsection_row, kernel_row, image_col, subsection_col, kernel_col, new_gray;
     Grayscale new_pixel, current_pixel;
     Grayscale *new_pixel_array;
 
@@ -160,21 +195,34 @@ int apply_grayscale_filter(GrayscaleImage *image, double *kernel, int filter_dim
         {
             new_pixel.Gray = 0;
 
+            new_gray = 0;
+
             //Iterate over a subsection of the image around the current (central) pixel
-            for (subsection_row = image_row - row_offset; subsection_row < image_row + row_offset; subsection_row++)
+            kernel_row = 0;
+            for (subsection_row = image_row - row_offset; subsection_row <= image_row + row_offset; subsection_row++)
             {
-                kernel_row = 0;
-                for (subsection_col = image_col - col_offset; subsection_col < image_col + col_offset; subsection_col++)
+                kernel_col = 0;
+                for (subsection_col = image_col - col_offset; subsection_col <= image_col + col_offset; subsection_col++)
                 {
-                    kernel_col = 0;
                     current_pixel = get_grayscale_pixel(image, subsection_row, subsection_col); //Our pixel in the original
 
-                    new_pixel.Gray += current_pixel.Gray * kernel[kernel_row * image->width + kernel_col];
+                    new_gray += current_pixel.Gray * kernel[kernel_row * filter_dimension[1] + kernel_col];
 
                     kernel_col++;
                 }
                 kernel_row++;
             }
+
+            if (new_gray > 255)
+            {
+                new_gray = 255;
+            }
+            else if (new_gray < 0)
+            {
+                new_gray = 0;
+            }
+
+            new_pixel.Gray = new_gray;
 
             new_pixel_array[current_pixel_index++] = new_pixel;
         }
@@ -200,14 +248,54 @@ int main()
     save_grayscale_to_file("lenaG.pgm", gray_images[1]);
     save_grayscale_to_file("lenaB.pgm", gray_images[2]);
 
-    double kernel[9] = {-1, 0, 1, -2, 0, 2, -1, 0, 1};
+
 
     int filter_dimension[2] = {3, 3};
-    apply_rgb_filter(image, kernel, filter_dimension);
-    save_rgb_to_file("lenaFiltered.ppm", image);
 
-    apply_grayscale_filter(gray_img, kernel, filter_dimension);
-    save_grayscale_to_file("lenaGrayFiltered.pgm", gray_img);
+    /*
+    double emboss_kernel[9] = {-2, -1, 0, -1, 1, 1, 0, 1, 2};
+
+    apply_rgb_filter(image, emboss_kernel, filter_dimension);
+    save_rgb_to_file("filtered_images/lenaEmboss.ppm", image);
+
+    apply_grayscale_filter(gray_img, emboss_kernel, filter_dimension);
+    save_grayscale_to_file("filtered_images/lenaEmbossGray.pgm", gray_img);
+    
+    
+    double sobel_kernel[9] = {-1, -2, -1, 0, 0, 0, 1, 2, 1};
+
+    apply_rgb_filter(image, sobel_kernel, filter_dimension);
+    save_rgb_to_file("filtered_images/lenaSobelEmboss.ppm", image);
+
+    apply_grayscale_filter(gray_img, sobel_kernel, filter_dimension);
+    save_grayscale_to_file("filtered_images/lenaSobelEmbossGray.pgm", gray_img);
+    
+
+    double sharpen_kernel[9] = {0, -1, 0, -1, 5, -1, 0, -1, 0};
+
+    apply_rgb_filter(image, sharpen_kernel, filter_dimension);
+    save_rgb_to_file("filtered_images/lenaSharpen.ppm", image);
+
+    apply_grayscale_filter(gray_img, sharpen_kernel, filter_dimension);
+    save_grayscale_to_file("filtered_images/lenaSharpenGra7.pgm", gray_img);
+    
+    double outline_kernel[9] = {-1, -1, -1, -1, 8, -1, -1, -1, -1};
+
+    apply_rgb_filter(image, outline_kernel, filter_dimension);
+    save_rgb_to_file("filtered_images/lenaOutline.ppm", image);
+
+    apply_grayscale_filter(gray_img, outline_kernel, filter_dimension);
+    save_grayscale_to_file("filtered_images/lenaOutlineGray.pgm", gray_img);
+
+    */
+   
+    double blur_kernel[9] = {0.0625, 0.125, 0.0625, 0.125, 0.25, 0.125, 0.0625, 0.125, 0.0625};
+
+    apply_rgb_filter(image, blur_kernel, filter_dimension);
+    save_rgb_to_file("filtered_images/lenaBlur.ppm", image);
+
+    apply_grayscale_filter(gray_img, blur_kernel, filter_dimension);
+    save_grayscale_to_file("filtered_images/lenaBlurGray.pgm", gray_img);
 
     return 0;
 }
