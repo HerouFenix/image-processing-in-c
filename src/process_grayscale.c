@@ -92,6 +92,21 @@ GrayscaleImage *load_grayscale_file(char *file_name)
     return image;
 };
 
+
+GrayscaleImage *copy_grayscale_image(GrayscaleImage *image){
+    GrayscaleImage *copied_image = (GrayscaleImage *)malloc(sizeof(GrayscaleImage));
+
+    copied_image->width = image->width;
+    copied_image->height = image->height;
+
+    copied_image->pixel_array = (Grayscale *)malloc(sizeof(Grayscale) * image->width * image->height); //Allocate memory for image's pixels
+
+    memcpy(copied_image->pixel_array, image->pixel_array, image->width*image->height*sizeof(Grayscale));
+
+    return copied_image;
+}
+
+
 Grayscale get_grayscale_pixel(GrayscaleImage *image, int row, int col)
 {
     if(row > image->height || col > image->width || row < 0 || col < 0){
@@ -175,8 +190,12 @@ int main()
     save_grayscale_to_file("subsection.ppm", subsect);
 
     int intensity = 100;
+
+    GrayscaleImage* copy = copy_grayscale_image(image);
     change_gray_intensity(image, intensity);
     save_grayscale_to_file("galaxy.pgm", image);
+    save_grayscale_to_file("galaxy0G.pgm", copy);
+
     return 0;
 }
 */

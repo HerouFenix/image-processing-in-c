@@ -57,3 +57,10 @@ Grayscale get_grayscale_pixel(GrayscaleImage *image, int line, int col);
  * @param pos_end An array containing the subsection's ending (bottom-right corner) x and y coordinates
  ***********************************************/
 GrayscaleImage *get_grayscale_subsection(GrayscaleImage *image, int pos_start[2], int pos_end[2]);
+
+/********************************************/ /**
+ * Function used to clone an image
+ *
+ * @param image The Image we want to clone
+ ***********************************************/
+GrayscaleImage *copy_grayscale_image(GrayscaleImage *image);

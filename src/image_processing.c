@@ -234,6 +234,7 @@ int apply_grayscale_filter(GrayscaleImage *image, double *kernel, int filter_dim
     return 0;
 }
 
+/*
 int main()
 {
     RGBImage *image = load_rgb_file("../lena.ppm");
@@ -249,9 +250,15 @@ int main()
     save_grayscale_to_file("lenaG.pgm", gray_images[1]);
     save_grayscale_to_file("lenaB.pgm", gray_images[2]);
 
+    int start[2], end[2];
+    start[0] = 0, start[1] = 0;
+    end[0] = 255, end[1] = 511;
+    RGBImage *subsect = get_rgb_subsection(image, start, end);
+    save_rgb_to_file("subsection.ppm", subsect);
+
     int filter_dimension[2] = {3, 3};
 
-    /*
+    
     double emboss_kernel[9] = {-2, -1, 0, -1, 1, 1, 0, 1, 2};
 
     apply_rgb_filter(image, emboss_kernel, filter_dimension);
@@ -277,7 +284,7 @@ int main()
 
     apply_grayscale_filter(gray_img, sharpen_kernel, filter_dimension);
     save_grayscale_to_file("filtered_images/lenaSharpenGra7.pgm", gray_img);
-    */
+    
     double outline_kernel[9] = {-1, -1, -1, -1, 8, -1, -1, -1, -1};
 
     apply_rgb_filter(image, outline_kernel, filter_dimension);
@@ -286,7 +293,7 @@ int main()
     apply_grayscale_filter(gray_img, outline_kernel, filter_dimension);
     save_grayscale_to_file("filtered_images/lenaOutlineGray.pgm", gray_img);
 
-    /*
+    
     double blur_kernel[9] = {0.0625, 0.125, 0.0625, 0.125, 0.25, 0.125, 0.0625, 0.125, 0.0625};
 
     apply_rgb_filter(image, blur_kernel, filter_dimension);
@@ -294,6 +301,7 @@ int main()
 
     apply_grayscale_filter(gray_img, blur_kernel, filter_dimension);
     save_grayscale_to_file("filtered_images/lenaBlurGray.pgm", gray_img);
-    */
+    
     return 0;
 }
+*/

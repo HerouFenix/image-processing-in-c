@@ -7,8 +7,12 @@ clean:
 	rm -f process_grayscale
 	rm -f process_binary
 	rm -f process_rgb
+	rm -f main
+	rm -f image_processing.o
+	rm -f process_grayscale.o
+	rm -f process_rgb.o
 
-all: image_processing process_grayscale process_binary process_rgb
+all: image_processing process_grayscale process_binary process_rgb main
 
 run_all:	all
 	@echo Run all demonstration programs
@@ -32,6 +36,12 @@ run_all:	all
 
 image_processing:	 image_processing.c process_grayscale.h process_rgb.h
 	gcc -Wall -O2 image_processing.c process_grayscale.o process_rgb.o -o $@ -lm
+
+main:	main.c process_grayscale.h process_rgb.h image_processing.h
+	gcc process_grayscale.c -c
+	gcc process_rgb.c -c
+	gcc image_processing.c -c
+	gcc -Wall -O2 main.c image_processing.o process_grayscale.o process_rgb.o -o $@ -lm
 
 process_grayscale:	process_grayscale.c process_grayscale.h
 	gcc -Wall -O2 process_grayscale.c -o $@ -lm

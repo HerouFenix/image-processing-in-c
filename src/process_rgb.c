@@ -35,7 +35,6 @@ int save_rgb_to_file(char *file_name, RGBImage *image)
     return 0;
 };
 
-//TO DO: VERIFY IF COMMENTS CAN BE PLACED ON ANY PLACE IN THE DOCUMENT OR WHATS THE DEAL WITH THAT!
 RGBImage *load_rgb_file(char *file_name)
 {
     char image_type[8];
@@ -91,6 +90,21 @@ RGBImage *load_rgb_file(char *file_name)
     fclose(fp);
     return image;
 };
+
+
+RGBImage *copy_rgb_image(RGBImage *image){
+    RGBImage *copied_image = (RGBImage *)malloc(sizeof(RGBImage));
+
+    copied_image->width = image->width;
+    copied_image->height = image->height;
+
+    copied_image->pixel_array = (Colour *)malloc(sizeof(Colour) * image->width * image->height); //Allocate memory for image's pixels
+
+    memcpy(copied_image->pixel_array, image->pixel_array, image->width*image->height*sizeof(Colour));
+
+    return copied_image;
+}
+
 
 Colour get_rgb_pixel(RGBImage *image, int row, int col)
 {
@@ -178,6 +192,7 @@ void change_rgb_intensity(RGBImage *image, int *pixel_intensity)
     }
 }
 
+
 /*
 int main()
 {
@@ -197,8 +212,12 @@ int main()
     intensity[0] = -100;
     intensity[1] = -100;
     intensity[2] = 255;
+
+    RGBImage* copy = copy_rgb_image(image);
     change_rgb_intensity(image, intensity);
     save_rgb_to_file("lena.ppm", image);
+    save_rgb_to_file("lenaOG.ppm", copy);
+
     return 0;
 }
 */

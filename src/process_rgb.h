@@ -54,8 +54,15 @@ Colour get_rgb_pixel(RGBImage *image, int line, int col);
 /********************************************/ /**
  * Function used to acess a subsection of image
  *
- * @param image The Grayscale image we want to subsect
+ * @param image The RGB image we want to subsect
  * @param pos_start An array containing the subsection's starting starting (left-top corner of subsection) row number and col number
  * @param pos_end An array containing the subsection's ending (bottom-right corner of subsection) row number and col number
  ***********************************************/
 RGBImage *get_rgb_subsection(RGBImage *image, int pos_start[2], int pos_end[2]);
+
+/********************************************/ /**
+ * Function used to clone an image
+ *
+ * @param image The Image we want to clone
+ ***********************************************/
+RGBImage *copy_rgb_image(RGBImage *image);
