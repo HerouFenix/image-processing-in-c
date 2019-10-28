@@ -213,6 +213,7 @@ int main()
     GrayscaleImage *image_og = load_grayscale_file("galaxy.pgm");
 
     save_to_bin_file("lena.pbm", convert_gray_to_bin(gray_img, 128));
+    int filter_dimension[2] = {3, 3};
 
     RGBImage* logo = load_rgb_file("../logo.ppm");
     logo = resize_image(logo, 100,100);
@@ -226,6 +227,14 @@ int main()
 
     BinaryImage *otsu_res = convert_gray_to_bin_otsu(load_grayscale_file("houses_pre_otsu.pgm"));
     save_to_bin_file("houses_pos_otsu.pbm", otsu_res);
+
+    apply_grayscale_filter(gray_img, blur_kernel, filter_dimension);
+    save_grayscale_to_file("filtered_images/lenaBlurGray.pgm", gray_img);
+    */
+
+    GrayscaleImage *image_og = load_grayscale_file("../galaxy.ascii.pbm");
+
+    save_to_bin_file("galaxy_bin_threshold.pbm", convert_gray_to_bin(image_og, 128));
 
     return 0;
 }
