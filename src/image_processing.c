@@ -124,23 +124,24 @@ RGBImage* resize_image(RGBImage* image, int new_height, int new_width){
     RGBImage *result;
     int width_ratio, height_ratio;
 
-    width_ratio = image->width/new_width + 1;
-    height_ratio = image->height/new_height + 1;
+    width_ratio = image->width/new_width;
+    height_ratio = image->height/new_height;
+
+    printf("Pixeis per width %d\n Pixeis per height %d\n", width_ratio, height_ratio);
 
     result = (RGBImage *)malloc(sizeof(RGBImage));
-    result->width = new_width + 1;
-    result->height = new_height + 1;
+    result->width = new_width;
+    result->height = new_height;
     printf("%d %d\n", result->width, result->height);
-    result->pixel_array = (Colour *)malloc(sizeof(Colour)*result->width*result->height);
+    result->pixel_array = (Colour *)calloc(result->width*result->height, sizeof(Colour));
 
     for (int i =0; i < result->width*result->height; i++){
         int r = 0, g = 0, b = 0;
         int col = i%result->height;
         int row = i/result->width;
-        int curr_pixel_col, curr_pixel_row;
-        for (int j = 0; j<height_ratio && curr_pixel_col < image->height; j++, curr_pixel_col = col*height_ratio+j){
-            for (int k = 0; k<width_ratio && curr_pixel_row < image->width; k++, curr_pixel_row = row*width_ratio+k){
-                Colour curr_pixel = get_rgb_pixel(image,curr_pixel_col, curr_pixel_row);
+        for (int j = 0, curr_pixel_col = 0; j<height_ratio && curr_pixel_col < image->height; curr_pixel_col = col*height_ratio+j++){
+            for (int k = 0, curr_pixel_row = 0; k<width_ratio && curr_pixel_row < image->width; curr_pixel_row = row*width_ratio+k++){
+                Colour curr_pixel = get_rgb_pixel(image,curr_pixel_row, curr_pixel_col);
                 r += curr_pixel.R;
                 g += curr_pixel.G;
                 b += curr_pixel.B;
@@ -210,14 +211,15 @@ int main()
     save_grayscale_to_file("lenaG.pgm", gray_images[1]);
     save_grayscale_to_file("lenaB.pgm", gray_images[2]);
 
-    GrayscaleImage *image_og = load_grayscale_file("galaxy.pgm");
+    //GrayscaleImage *image_og = load_grayscale_file("galaxy.pgm");
 
     save_to_bin_file("lena.pbm", convert_gray_to_bin(gray_img, 128));
     int filter_dimension[2] = {3, 3};
 
     RGBImage* logo = load_rgb_file("../logo.ppm");
-    logo = resize_image(logo, 100,100);
-    save_rgb_to_file("new_small_logo.ppm", logo);
+    RGBImage* new_logo = resize_image(logo, 115,115);
+    save_rgb_to_file("new_small_logo.ppm", new_logo);
+    save_rgb_to_file("logo.ppm", logo);
     //image = load_rgb_file("../David.ppm");
     
     int pos[2] = {233,150};
@@ -227,14 +229,10 @@ int main()
 
     BinaryImage *otsu_res = convert_gray_to_bin_otsu(load_grayscale_file("houses_pre_otsu.pgm"));
     save_to_bin_file("houses_pos_otsu.pbm", otsu_res);
-
+    /*
     apply_grayscale_filter(gray_img, blur_kernel, filter_dimension);
     save_grayscale_to_file("filtered_images/lenaBlurGray.pgm", gray_img);
     */
-
-    GrayscaleImage *image_og = load_grayscale_file("../galaxy.ascii.pbm");
-
-    save_to_bin_file("galaxy_bin_threshold.pbm", convert_gray_to_bin(image_og, 128));
 
     return 0;
 }
