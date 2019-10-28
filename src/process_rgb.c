@@ -1,71 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "process_rgb.h"
 
-/********************************************/ /**
- *  STRUCTURE DECLARATIONS
- ***********************************************/
-/// Structure used to represent RGB colours (pixels)
-/// Unsigned Char since we only need to specify values from 0 to 255, which can be done with 1 byte (which corresponds to the size of an unsigned char)
-typedef struct
-{
-    unsigned char R;
-    unsigned char G;
-    unsigned char B;
-} Colour;
-
-/// Structure used to represent an RGB image
-/**
- *  The way we chose to represent our pixels was through the use of an array of chars (1 byte structures). 
- *  Instead of thinking of the image as a bidimensional array, we simply used a linear array noting that the image position can be given by the formula:
- *  position = line*noOfColumns+column
-*/
-typedef struct
-{
-    int width, height;
-    Colour *pixel_array;
-} RGBImage;
-
-/********************************************/ /**
- *  FUNCTION DECLARATIONS
- ***********************************************/
-/********************************************/ /**
- * Function used to save an RGB image to a file
- *
- * @param file_name The File's path on which we'll be saving the image
- * @param image The RGB Image we want to save
- ***********************************************/
-int save_to_file(char *file_name, RGBImage *image);
-
-/********************************************/ /**
- * Function used to load an RGB image from a file
- *
- * @param file_name The File's path on which we'll be saving the image
- ***********************************************/
-RGBImage *load_file(char *file_name);
-
-/********************************************/ /**
- * Function used to access a specific pixel within an RGB image
- *
- * @param image The RGB Image we want to save
- * @param line The pixel's line (y position)
- * @param col The pixel's col (x position)e
- ***********************************************/
-Colour get_pixel(RGBImage *image, int line, int col);
-
-/********************************************/ /**
- * Function used to acess a subsection of image
- *
- * @param image The Grayscale image we want to subsect
- * @param pos_start An array containing the subsection's starting starting (left-top corner of subsection) row number and col number
- * @param pos_end An array containing the subsection's ending (bottom-right corner of subsection) row number and col number
- ***********************************************/
-RGBImage get_subsection(RGBImage *image, int pos_start[2], int pos_end[2]);
 
 /********************************************/ /**
  *  FUNCTION DEFINITION
  ***********************************************/
-int save_to_file(char *file_name, RGBImage *image)
+int save_rgb_to_file(char *file_name, RGBImage *image)
 {
     FILE *fp;
     int width, height, colour_range;
@@ -94,7 +36,7 @@ int save_to_file(char *file_name, RGBImage *image)
 };
 
 //TO DO: VERIFY IF COMMENTS CAN BE PLACED ON ANY PLACE IN THE DOCUMENT OR WHATS THE DEAL WITH THAT!
-RGBImage *load_file(char *file_name)
+RGBImage *load_rgb_file(char *file_name)
 {
     char image_type[8];
     int colour_range, comments;
@@ -150,13 +92,21 @@ RGBImage *load_file(char *file_name)
     return image;
 };
 
-Colour get_pixel(RGBImage *image, int row, int col)
+Colour get_rgb_pixel(RGBImage *image, int row, int col)
 {
+    if(row > image->height || col > image->width || row < 0 || col < 0){
+        Colour null_pixel;
+        null_pixel.R = 0;
+        null_pixel.G = 0;
+        null_pixel.B = 0;
+
+        return null_pixel;
+    }
     int index = row * image->width + col; //The index of the pixel is given by the formula: pixel_line * no_columns + pixel_column
     return image->pixel_array[index];
 }
 
-RGBImage *get_subsect(RGBImage *image, int pos_start[2], int pos_end[2])
+RGBImage *get_rgb_subsection(RGBImage *image, int pos_start[2], int pos_end[2])
 {
     //Verify that pos_start isn't infront of pos_end
     if(pos_start[0] > pos_end[0] || pos_start[1] > pos_end[1]){
@@ -187,20 +137,68 @@ RGBImage *get_subsect(RGBImage *image, int pos_start[2], int pos_end[2])
     return subsect;
 }
 
+void change_rgb_intensity(RGBImage *image, int *pixel_intensity)
+{
+    int length,index, new_colour;
+    
+    length = image->height*image->width;
+
+    for (index = 0; index < length; index++)
+    {   
+        //Change Red intensity
+        new_colour = image->pixel_array[index].R + pixel_intensity[0];
+        if (new_colour > 255){
+            new_colour = 255;
+        }else if(new_colour < 0){
+            new_colour = 0;
+        }
+
+        image->pixel_array[index].R = new_colour;
+
+        //Change Green intensity
+        new_colour = image->pixel_array[index].G + pixel_intensity[1];
+        if (new_colour > 255){
+            new_colour = 255;
+        }else if(new_colour < 0){
+            new_colour = 0;
+        }
+
+        image->pixel_array[index].G = new_colour;
+
+
+        //Change Blue intensity
+        new_colour = image->pixel_array[index].B + pixel_intensity[2];
+        if (new_colour > 255){
+            new_colour = 255;
+        }else if(new_colour < 0){
+            new_colour = 0;
+        }
+
+        image->pixel_array[index].B = new_colour;
+    }
+}
+
+/*
 int main()
 {
-    RGBImage *image = load_file("../lena.ppm");
+    RGBImage *image = load_rgb_file("../lena.ppm");
 
-    int start[2], end[2];
+    int start[2], end[2], intensity[3];
 
     start[0] = 0, start[1] = 0;
     end[0] = 255, end[1] = 511;
 
-    Colour pixel = get_pixel(image, image->width / 2, image->height / 2);
+    Colour pixel = get_rgb_pixel(image, image->width / 2, image->height / 2);
     printf("R%d G%d B%d\n", pixel.R, pixel.G, pixel.B);
+    
+    RGBImage *subsect = get_rgb_subsection(image, start, end);
+    save_rgb_to_file("subsection.ppm", subsect);
 
-    RGBImage *subsect = get_subsect(image, start, end);
-    save_to_file("subsection.ppm", subsect);
-    save_to_file("lena.ppm", image);
+    intensity[0] = -100;
+    intensity[1] = -100;
+    intensity[2] = 255;
+    change_rgb_intensity(image, intensity);
+    save_rgb_to_file("lena.ppm", image);
     return 0;
 }
+*/
