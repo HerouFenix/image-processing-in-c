@@ -15,3 +15,13 @@ GrayscaleImage* convert_rgb_to_grayscale(RGBImage *rgb_image);
  * @param rgb_image The Grayscale image we want to subsect
  ***********************************************/
 GrayscaleImage** convert_rgb_to_three_grayscale(RGBImage *rgb_image);
+
+/********************************************/ /**
+ * Function used to add an rgb logo to an rgb image
+ *
+ * @param rgb_image The RGB image we want to add our logo to
+ * @param logo The RGB logo we want to add to our image
+ * @param pixel The pixel we want our logo to start in
+ * @param intensity The intensity of the logo to add to image
+ ***********************************************/
+void add_logo_to_image(RGBImage *rgb_image, RGBImage *logo, int* pixel, float intensity);

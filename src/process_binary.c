@@ -13,9 +13,9 @@ BinaryImage* get_bin_subsection(BinaryImage *image, int *pos_start, int *pos_end
     new_image -> bin_array = (unsigned char *)malloc(new_image->height * new_image-> width);
     int i;
     for (i = 0; i < new_image->height; i++){
-        memcpy(new_image->bin_array + i*new_image->width,
+        memmove(new_image->bin_array + i*new_image->width,
                 image->bin_array + (pos_start[0]+i)*image->width + pos_start[1],
-                new_image->width * sizeof(unsigned char));
+                new_image->width);
     }
     return new_image;
 }
@@ -40,7 +40,17 @@ int save_to_bin_file(char *file_name, BinaryImage *image){
     printf("P4\n");
     printf("%d %d\n", image->width, image->height);
 
-    fwrite(image->bin_array, image->width, image->height, fp);
+    /*unsigned char pixel, control;
+    for (int i = 0; i < image->height*image->width; i++){
+        if (i % 8==0){
+            control = image->bin_array[i/8];
+        }
+        pixel = (unsigned char) ((control & 1<<(7 - i%8)) >> (7-i%8) );
+        fwrite(&pixel, 1, 1, fp);
+    }*/
+
+    fwrite(image->bin_array, image->width/8, image->height, fp);
+
     fclose(fp);
     return 0;
 }
@@ -81,8 +91,17 @@ BinaryImage* load_bin_file(char *file_name){
 
     while (fgetc(fp) != '\n')
         ; //Remove blank spaces
-
-    fread(image->bin_array, 1, image->height*image->width, fp);
+    /*
+    unsigned char pixel, control=0;
+    for (int i = 0; i < image->height*image->width; i++){
+        fread(&pixel, 1, 1, fp);
+        if (i%8==0 && i != 0) {
+            image->bin_array[i/8 - 1] = control;
+            control = 0;
+        }
+        control |= (unsigned char)(pixel & (1<<(7 - i%8)));       
+    }*/
+    fread(image->bin_array, 1, image->height*image->width/8, fp);
 
    /* int error;
     if ((error = fread(image->bin_array, image->width, image->height, fp)) != image->height)
@@ -94,11 +113,12 @@ BinaryImage* load_bin_file(char *file_name){
     fclose(fp);
     return image;
 }
+
 /*
 int main()
 {
-	BinaryImage *image = load_bin_file("../marbles.pbm");
-    int start[] = {0,3}, end[] = {image->height/2,image->width - 1};
+	BinaryImage *image = load_bin_file("../apollonian_gasket.pbm");
+    int start[] = {0,0}, end[] = {300, 0};
     //int start_2[] = {0,0}, end_2[] = {450, 450};
     save_to_bin_file("subsection_ag.pbm", get_bin_subsection(image,start,end));
     //save_to_bin_file("subsection_ag_2.pbm", get_bin_subsection(image,start_2,end_2));
