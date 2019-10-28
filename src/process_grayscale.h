@@ -40,10 +40,12 @@ GrayscaleImage *load_grayscale_file(char *file_name);
 
 /********************************************/ /**
  * Function used to acess a specific pixel within a Grayscale Image
+ * If a row or col that goes outside the image's bounds is given,
+ * the function returns a Null_Pixel (a Grayscale Pxel with it's gray value set to 0)
  *
  * @param image The Grayscale image we want to subsect
- * @param line The pixel's line (y position)
- * @param col The pixel's col (x position)
+ * @param row The pixel's row 
+ * @param col The pixel's column
  ***********************************************/
 Grayscale get_grayscale_pixel(GrayscaleImage *image, int line, int col);
 

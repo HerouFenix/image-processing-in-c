@@ -94,6 +94,14 @@ RGBImage *load_rgb_file(char *file_name)
 
 Colour get_rgb_pixel(RGBImage *image, int row, int col)
 {
+    if(row > image->height || col > image->width || row < 0 || col < 0){
+        Colour null_pixel;
+        null_pixel.R = 0;
+        null_pixel.G = 0;
+        null_pixel.B = 0;
+
+        return null_pixel;
+    }
     int index = row * image->width + col; //The index of the pixel is given by the formula: pixel_line * no_columns + pixel_column
     return image->pixel_array[index];
 }
@@ -129,21 +137,67 @@ RGBImage *get_rgb_subsection(RGBImage *image, int pos_start[2], int pos_end[2])
     return subsect;
 }
 
+void change_rgb_intensity(RGBImage *image, int *pixel_intensity)
+{
+    int length,index, new_colour;
+    
+    length = image->height*image->width;
+
+    for (index = 0; index < length; index++)
+    {   
+        //Change Red intensity
+        new_colour = image->pixel_array[index].R + pixel_intensity[0];
+        if (new_colour > 255){
+            new_colour = 255;
+        }else if(new_colour < 0){
+            new_colour = 0;
+        }
+
+        image->pixel_array[index].R = new_colour;
+
+        //Change Green intensity
+        new_colour = image->pixel_array[index].G + pixel_intensity[1];
+        if (new_colour > 255){
+            new_colour = 255;
+        }else if(new_colour < 0){
+            new_colour = 0;
+        }
+
+        image->pixel_array[index].G = new_colour;
+
+
+        //Change Blue intensity
+        new_colour = image->pixel_array[index].B + pixel_intensity[2];
+        if (new_colour > 255){
+            new_colour = 255;
+        }else if(new_colour < 0){
+            new_colour = 0;
+        }
+
+        image->pixel_array[index].B = new_colour;
+    }
+}
+
 /*
 int main()
 {
     RGBImage *image = load_rgb_file("../lena.ppm");
 
-    int start[2], end[2];
+    int start[2], end[2], intensity[3];
 
     start[0] = 0, start[1] = 0;
     end[0] = 255, end[1] = 511;
 
     Colour pixel = get_rgb_pixel(image, image->width / 2, image->height / 2);
     printf("R%d G%d B%d\n", pixel.R, pixel.G, pixel.B);
-
+    
     RGBImage *subsect = get_rgb_subsection(image, start, end);
     save_rgb_to_file("subsection.ppm", subsect);
+
+    intensity[0] = -100;
+    intensity[1] = -100;
+    intensity[2] = 255;
+    change_rgb_intensity(image, intensity);
     save_rgb_to_file("lena.ppm", image);
     return 0;
 }

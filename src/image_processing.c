@@ -149,6 +149,7 @@ RGBImage* resize_image(RGBImage* image, int new_height, int new_width){
         result->pixel_array[i].R = r/(height_ratio*width_ratio);
         result->pixel_array[i].G = g/(height_ratio*width_ratio);
         result->pixel_array[i].B = b/(height_ratio*width_ratio);
+        
     }
 
     return result;

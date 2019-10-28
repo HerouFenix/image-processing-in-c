@@ -94,6 +94,13 @@ GrayscaleImage *load_grayscale_file(char *file_name)
 
 Grayscale get_grayscale_pixel(GrayscaleImage *image, int row, int col)
 {
+    if(row > image->height || col > image->width || row < 0 || col < 0){
+        Grayscale null_pixel;
+        null_pixel.Gray = 0;
+
+        return null_pixel;
+    }
+
     int index = row * image->width + col; //The index of the pixel is given by the formula: pixel_line * no_columns + pixel_column
     return image->pixel_array[index];
 }
@@ -130,6 +137,27 @@ GrayscaleImage *get_grayscale_subsection(GrayscaleImage *image, int pos_start[2]
     return subsect;
 }
 
+
+void change_gray_intensity(GrayscaleImage *image, int pixel_intensity)
+{
+    int length,index, new_colour;
+    
+    length = image->height*image->width;
+
+    for (index = 0; index < length; index++)
+    {   
+        //Change Gray intensity
+        new_colour = image->pixel_array[index].Gray + pixel_intensity;
+        if (new_colour > 255){
+            new_colour = 255;
+        }else if(new_colour < 0){
+            new_colour = 0;
+        }
+
+        image->pixel_array[index].Gray = new_colour;
+    }
+}
+
 /*
 int main()
 {
@@ -145,6 +173,9 @@ int main()
 
     GrayscaleImage *subsect = get_grayscale_subsection(image, start, end);
     save_grayscale_to_file("subsection.ppm", subsect);
+
+    int intensity = 100;
+    change_gray_intensity(image, intensity);
     save_grayscale_to_file("galaxy.pgm", image);
     return 0;
 }
