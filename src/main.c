@@ -28,9 +28,6 @@ int main()
 
     while (1)
     {
-        //Clear the screen
-        system("clear");
-
         //Clears the keyboard buffer
         fflush(stdin);
 
@@ -47,8 +44,7 @@ int main()
              "\n[H]istory of changes to Image"
              "\n.........."
              "\n[x]Exit");
-        option = getchar();
-
+        scanf(" %c", &option);
         switch (option)
         {
         case 'L': //Load Image
@@ -60,13 +56,18 @@ int main()
                  "\n[G]rayscale"
                  "\n.........."
                  "\n[C]ancel");
-            option = getchar();
+            scanf(" %c", &option);
 
             if(option=='R'){
                 fflush(stdin);
+
                 puts("\nType down your image's path: ");
                 char file_path[256];
-                fgets(file_path, sizeof(file_path), stdin);
+                if (!scanf(" %s", file_path))
+                {
+                    fprintf(stderr, "ERROR: Something went wrong reading your input\n");
+                    exit(1);
+                }
 
                 RGB_IMAGE = load_rgb_file(file_path);
                 RGB_OG = copy_rgb_image(RGB_IMAGE);
@@ -75,7 +76,11 @@ int main()
                 fflush(stdin);
                 puts("\nType down your image's path: ");
                 char file_path[256];
-                fgets(file_path, sizeof(file_path), stdin);
+                if (!fgets(file_path, sizeof(file_path), stdin))
+                {
+                    fprintf(stderr, "ERROR: Something went wrong reading your input\n");
+                    exit(1);
+                }
 
                 GRAY_IMAGE = load_grayscale_file(file_path);
                 GRAY_OG = copy_grayscale_image(GRAY_IMAGE);
