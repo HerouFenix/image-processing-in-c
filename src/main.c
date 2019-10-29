@@ -930,7 +930,7 @@ int main()
                 increment_rgb_operations(" Adapted  ");
                 printf("\nSuccessfully converted RGB image to single Grayscale image and saved it to %s\n", file_path);
             }
-            else if (option == 'G')
+            else if (option == 'M')
             {
                 fflush(stdin);
 
@@ -992,7 +992,7 @@ int main()
                 increment_binary_operations(" AdaptedG ");
                 printf("\nSuccessfully converted grayimage to binary with %u threshold and saved it to %s\n", threshold, file_path);
 
-            }else if (option == 'G'){
+            }else if (option == 'O'){
                 fflush(stdin);
 
                 if (LOADED_GRAY == 0)
