@@ -31,6 +31,7 @@ run_all:	all
 #
 
 image_processing:	 image_processing.c process_grayscale.h process_rgb.h process_binary.h
+	gcc -c process_binary.c
 	gcc -Wall -O2 image_processing.c process_grayscale.o process_rgb.o process_binary.o -o $@ -lm
 
 process_grayscale:	process_grayscale.c process_grayscale.h

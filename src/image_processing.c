@@ -13,19 +13,19 @@
 BinaryImage* convert_gray_to_bin(GrayscaleImage *image, unsigned char threshold) {
     BinaryImage *res;
     res = (BinaryImage *)malloc(sizeof(BinaryImage)); 
+    
+    if(image->width %8 != 0){
+        printf("Image width not divisible by 8, due to bit stuffing issues, it wouldn't be converted correctly\n");
+        return res;
+    }
 
     res->height = image->height;
     res->width = image->width;
 
-    res->bin_array = (unsigned char *)malloc(res->height*res->width/8);
+    res->bin_array = (unsigned char *)malloc(res->height*res->width);
 
-    unsigned char pixel = 0;
     for (int i = 0; i < res->height*res->width; i++){
-        if (i != 0 && i%8 == 0){
-            res->bin_array[i/8 - 1] = pixel;
-            pixel = 0;
-        }
-        pixel |= (image->pixel_array[i].Gray < threshold) << (7 - i%8);
+        res->bin_array[i] = (image->pixel_array[i].Gray < threshold) <<7;
     }
 
     return res;
@@ -120,28 +120,26 @@ void add_logo_to_image(RGBImage *rgb_image, RGBImage *logo, int* pixel, float in
     }
 }
 
-RGBImage* resize_image(RGBImage* image, int new_height, int new_width){
+RGBImage* reduce_image(RGBImage* image, int new_height, int new_width){
     RGBImage *result;
     int width_ratio, height_ratio;
 
     width_ratio = image->width/new_width;
     height_ratio = image->height/new_height;
 
-    printf("Pixeis per width %d\n Pixeis per height %d\n", width_ratio, height_ratio);
-
     result = (RGBImage *)malloc(sizeof(RGBImage));
     result->width = new_width;
     result->height = new_height;
-    printf("%d %d\n", result->width, result->height);
+    
     result->pixel_array = (Colour *)calloc(result->width*result->height, sizeof(Colour));
 
     for (int i =0; i < result->width*result->height; i++){
         int r = 0, g = 0, b = 0;
         int col = i%result->height;
         int row = i/result->width;
-        for (int j = 0, curr_pixel_col = 0; j<height_ratio && curr_pixel_col < image->height; curr_pixel_col = col*height_ratio+j++){
-            for (int k = 0, curr_pixel_row = 0; k<width_ratio && curr_pixel_row < image->width; curr_pixel_row = row*width_ratio+k++){
-                Colour curr_pixel = get_rgb_pixel(image,curr_pixel_row, curr_pixel_col);
+        for (int j = 0; j<height_ratio; j++){
+            for (int k = 0; k<width_ratio;k++){
+                Colour curr_pixel = get_rgb_pixel(image,row*width_ratio+k, col*height_ratio+j);
                 r += curr_pixel.R;
                 g += curr_pixel.G;
                 b += curr_pixel.B;
@@ -167,29 +165,31 @@ BinaryImage* convert_gray_to_bin_otsu(GrayscaleImage *image){
         }
     }
 
-    int top = 256, sumB = 0, wb = 0, wf, dot_product_hist = 0, level=0;
+    int top = 256, wb = 0, wf=0, level=0;
     int total = image->height*image->width;
+    float sumB = 0.0, sum = 0.0;
     float max = 0.0;
 
     for (int i = 0; i < top; i++){
-        dot_product_hist += i * histogram[i];
+        sum += i * histogram[i];
     }
 
     for (int i = 0; i<top; i++){
-        wf = total - wb;
-        if (wb > 0 && wf > 0){
-            float mF = (dot_product_hist - sumB) / wf;
-            float val = wb*wf*((sumB/wb) - mF)*((sumB/wb) - mF);
-            if (val >= max){
-                level = i+1;
-                max = val;
-            }
-        }
+        
         wb += histogram[i];
-        sumB += i*histogram[i];
-    }
+        if (wb == 0) continue;
+        wf = total - wb;
+        if (wf == 0) break;
+        sumB +=(i*histogram[i]);
 
-    printf("%d -> %f\n", level, max);
+        float mB = sumB/wb;
+        float mF = (sum - sumB) / wf;
+        float val =(float) wb*(float)wf*(mB - mF)*(mB- mF);
+        if (val >= max){
+            level = i;
+            max = val;
+        }
+    }
 
     return convert_gray_to_bin(image, level);
 }
@@ -211,28 +211,16 @@ int main()
     save_grayscale_to_file("lenaG.pgm", gray_images[1]);
     save_grayscale_to_file("lenaB.pgm", gray_images[2]);
 
-    //GrayscaleImage *image_og = load_grayscale_file("galaxy.pgm");
-
     save_to_bin_file("lena.pbm", convert_gray_to_bin(gray_img, 128));
+    
     int filter_dimension[2] = {3, 3};
-
     RGBImage* logo = load_rgb_file("../logo.ppm");
-    RGBImage* new_logo = resize_image(logo, 115,115);
+    RGBImage* new_logo = reduce_image(logo, 115,115);
     save_rgb_to_file("new_small_logo.ppm", new_logo);
     save_rgb_to_file("logo.ppm", logo);
-    //image = load_rgb_file("../David.ppm");
     
     int pos[2] = {233,150};
     add_logo_to_image(image, logo, pos, 0.7);
-
-    save_rgb_to_file("cona.ppm",image);
-
-    BinaryImage *otsu_res = convert_gray_to_bin_otsu(load_grayscale_file("houses_pre_otsu.pgm"));
-    save_to_bin_file("houses_pos_otsu.pbm", otsu_res);
-    /*
-    apply_grayscale_filter(gray_img, blur_kernel, filter_dimension);
-    save_grayscale_to_file("filtered_images/lenaBlurGray.pgm", gray_img);
-    */
 
     return 0;
 }
