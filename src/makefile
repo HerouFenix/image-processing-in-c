@@ -12,11 +12,7 @@ clean:
 	rm -f process_grayscale.o
 	rm -f process_rgb.o
 
-<<<<<<< HEAD
 all: image_processing process_grayscale process_binary process_rgb main
-=======
-all: image_processing process_grayscale process_binary process_rgb
->>>>>>> 0d047626b7fb87c54a52aa7190958a15aecc5ca4
 
 run_all:	all
 	@echo Run all demonstration programs
@@ -38,14 +34,18 @@ run_all:	all
 # $@ gets replaced by the name of the target
 #
 
-image_processing:	 image_processing.c process_grayscale.h process_rgb.h
-	gcc -Wall -O2 image_processing.c process_grayscale.o process_rgb.o -o $@ -lm
-
-main:	main.c process_grayscale.h process_rgb.h image_processing.h
+image_processing:	 image_processing.c process_grayscale.h process_rgb.h process_binary.h
 	gcc process_grayscale.c -c
 	gcc process_rgb.c -c
+	gcc process_binary.c -c
+	gcc -Wall -O2 image_processing.c process_grayscale.o process_rgb.o process_binary.o -o $@ -lm
+
+main:	main.c process_grayscale.h process_rgb.h process_binary.h image_processing.h
+	gcc process_grayscale.c -c
+	gcc process_rgb.c -c
+	gcc process_binary.c -c
 	gcc image_processing.c -c
-	gcc -Wall -O2 main.c image_processing.o process_grayscale.o process_rgb.o -o $@ -lm
+	gcc -Wall -O2 main.c process_grayscale.o process_rgb.o process_binary.o image_processing.o  -o $@ -lm
 
 process_grayscale:	process_grayscale.c process_grayscale.h
 	gcc -Wall -O2 process_grayscale.c -o $@ -lm

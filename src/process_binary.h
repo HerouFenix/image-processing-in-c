@@ -1,6 +1,10 @@
-/********************************************/ /**
- *  STRUCTURE DECLARATIONS
- ***********************************************/
+/**
+ * @file
+ * @brief File containing Binary related methods and structures
+*/
+
+//STRUCTURE DECLARATIONS
+
 /// Structure used to represent Binary images
 /**
  *  The way we chose to represent our bits was through the use of an array of chars (1 byte structures). 
@@ -13,10 +17,15 @@ typedef struct
     unsigned char *bin_array;
 } BinaryImage;
 
+
+// FUNCTION DECLARATIONS
+
 /********************************************/ /**
- *  FUNCTION DECLARATIONS
+ * Function used to save a Binary image
+ *
+ * @param file_name The File's path to which we want to save our image
+ * @param image The Binary image we want to save
  ***********************************************/
-///Function used to save a Binary image to a file
 int save_to_bin_file(char *file_name, BinaryImage *image);
 
 /********************************************/ /**

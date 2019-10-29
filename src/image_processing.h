@@ -1,6 +1,11 @@
-/********************************************//**
- *  FUNCTION DECLARATIONS
- ***********************************************/
+
+/**
+ * @file
+ * @brief File containing methods that involve different types of image structures
+*/
+
+//FUNCTION DECLARATIONS
+ 
 /********************************************/ /**
  * Function used to create a grayscale image out of an rgb one by computing all of its r, g and b parameters
  *
@@ -68,4 +73,4 @@ int apply_grayscale_filter(GrayscaleImage *image, double *kernel, int filter_dim
  * @param new_height The RGB image's new height
  * @param new_width The RGB image's new width
  ***********************************************/
-RGBImage* reduce_image(RGBImage* image, int new_height, int new_width){
+RGBImage* reduce_image(RGBImage* image, int new_height, int new_width);

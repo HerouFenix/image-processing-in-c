@@ -1,3 +1,8 @@
+/**
+ * @file
+ * @brief File containing a Text-based Test interface for all of our modules' operations
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -259,7 +264,7 @@ int main()
                     exit(1);
                 }
 
-                save_binary_to_file(file_path, BIN_IMAGE); //Save Image
+                save_to_bin_file(file_path, BIN_IMAGE); //Save Image
                 increment_binary_operations("  Saved   ");
                 printf("\nSuccessfully saved Binary Image to %s\n", file_path);
             }
@@ -977,7 +982,7 @@ int main()
                     exit(1);
                 }
                 unsigned char threshold;
-                if (!scanf(" %u", &threshold))
+                if (!scanf(" %hhu", &threshold))
                 {
                     fprintf(stderr, "ERROR: Something went wrong reading your input\n");
                     exit(1);
@@ -1244,7 +1249,7 @@ int main()
                     exit(1);
                 }
 
-                unsigned char pixel = get_binary_pixel(BIN_IMAGE,pos[0],pos[1]);
+                unsigned char pixel = access_bin_pixel(BIN_IMAGE,pos[0],pos[1]);
 
                 printf("Bool: %u\n", pixel);
                 printf("\nSuccessfully gathered Binary pixel's information\n");
