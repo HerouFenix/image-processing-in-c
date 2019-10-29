@@ -250,7 +250,7 @@ int main()
             {
                 fflush(stdin);
 
-                if (LOADED_GRAY == 0)
+                if (LOADED_BIN == 0)
                 {
                     puts("\nERROR: You haven't loaded any Binary Images into memory!");
                     break;
