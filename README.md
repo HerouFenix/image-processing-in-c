@@ -31,9 +31,6 @@ Opening a terminal inside the **src** folder run the following commands:
 -	make clean
 	-	Cleans all compiled files
 
--	make all
-	-	Compiles all files
-
 
 ## License
 
