@@ -52,7 +52,7 @@ RGBImage *load_rgb_file(char *file_name);
 Colour get_rgb_pixel(RGBImage *image, int line, int col);
 
 /********************************************/ /**
- * Function used to acess a subsection of image
+ * Function used to access a subsection of image
  *
  * @param image The RGB image we want to subsect
  * @param pos_start An array containing the subsection's starting starting (left-top corner of subsection) row number and col number
@@ -66,3 +66,12 @@ RGBImage *get_rgb_subsection(RGBImage *image, int pos_start[2], int pos_end[2]);
  * @param image The Image we want to clone
  ***********************************************/
 RGBImage *copy_rgb_image(RGBImage *image);
+
+
+/********************************************/ /**
+ * Function used to change an RGB Image's R, G and B intensities
+ *
+ * @param image The Image we want to change the intensity of
+ * @param pixel_intensity An array with an R,G and B intensity modifier
+ ***********************************************/
+void change_rgb_intensity(RGBImage *image, int *pixel_intensity);

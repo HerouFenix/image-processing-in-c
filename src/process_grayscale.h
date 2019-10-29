@@ -64,3 +64,12 @@ GrayscaleImage *get_grayscale_subsection(GrayscaleImage *image, int pos_start[2]
  * @param image The Image we want to clone
  ***********************************************/
 GrayscaleImage *copy_grayscale_image(GrayscaleImage *image);
+
+
+/********************************************/ /**
+ * Function used to change a Grayscale Image's intensity
+ *
+ * @param image The Image we want to change the intensity of
+ * @param pixel_intensity Our intensity modifier
+ ***********************************************/
+void change_gray_intensity(GrayscaleImage *image, int pixel_intensity);
