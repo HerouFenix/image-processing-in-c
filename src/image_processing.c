@@ -4,13 +4,30 @@
 
 #include "process_rgb.h"
 #include "process_grayscale.h"
+#include "process_binary.h"
 #include "image_processing.h"
 
-/********************************************/ /**
+/********************************************//**
  *  FUNCTION DEFINITIONS
  ***********************************************/
-GrayscaleImage *convert_rgb_to_grayscale(RGBImage *rgb_image)
-{
+BinaryImage* convert_gray_to_bin(GrayscaleImage* image, int threshold) {
+    BinaryImage *res;
+    res = (BinaryImage *)malloc(sizeof(BinaryImage)); 
+
+    res->height = image->height;
+    res->width = image->width;
+
+    res->bin_array = (unsigned char)malloc(res->height*res->width);
+
+    for (int i = 0; i < res->height*res->width; i++){
+        res->bin_array[i]= (unsigned char) ((image->pixel_array + i) > threshold)? 255:0; 
+    }
+
+    return res;
+}
+
+GrayscaleImage* convert_rgb_to_grayscale(RGBImage *rgb_image){
+
     GrayscaleImage *gray_img;
     Grayscale gray;
     Colour colour;
@@ -233,8 +250,8 @@ int apply_grayscale_filter(GrayscaleImage *image, double *kernel, int filter_dim
 
     return 0;
 }
-
 /*
+
 int main()
 {
     RGBImage *image = load_rgb_file("../lena.ppm");

@@ -15,8 +15,7 @@ clean:
 all: image_processing process_grayscale process_binary process_rgb main
 
 run_all:	all
-	@echo Run all demonstration programs
-	./image_processing
+	
 
 	@echo Run all demonstration programs
 	./process_grayscale
@@ -26,6 +25,9 @@ run_all:	all
 
 	@echo Run all demonstration programs
 	./process_rgb
+
+	@echo Run all demonstration programs
+	./image_processing
 
 	@echo Done	# note the @ at the beginning (make will not print the command)
 
@@ -51,3 +53,7 @@ process_binary:	process_binary.c process_binary.h
 
 process_rgb:	process_rgb.c process_rgb.h
 	gcc -Wall -O2 process_rgb.c -o $@ -lm
+
+image_processing:	 image_processing.c process_grayscale.h process_rgb.h
+	gcc -Wall -O2 image_processing.c process_grayscale.o process_rgb.o -o $@ -lm
+

@@ -1,45 +1,30 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "process_binary.h"
 
-/********************************************/ /**
- *  STRUCTURE DECLARATIONS
- ***********************************************/
-/// Structure used to represent Binary images
-/**
- *  The way we chose to represent our bits was through the use of an array of chars (1 byte structures). 
- *  Instead of thinking of the image as a bidimensional array, we simply used a linear array noting that the image position can be given by the formula:
- *  position = line*noOfColumns+column
-*/
-typedef struct
-{
-    int height, width;
-    unsigned char *bin_array;
-} BinaryImage;
+BinaryImage* get_bin_subsection(BinaryImage *image, int *pos_start, int *pos_end){
+    BinaryImage *new_image;
+    new_image = (BinaryImage *)malloc(sizeof(BinaryImage)); 
 
-/********************************************/ /**
- *  FUNCTION DECLARATIONS
- ***********************************************/
-///Function used to save a Binary image to a file
-int save_to_file(char *file_name, BinaryImage *image);
+    new_image->width = pos_end[1] - pos_start[1] + 1;
+    new_image->height = pos_end[0] - pos_start[0] + 1;
 
-/********************************************/ /**
- * Function used to load a Binary image
- *
- * @param file_name The File's path containing a Binary Image (PBM - P4)
- ***********************************************/
-BinaryImage* load_file(char *file_name);
+    new_image -> bin_array = (unsigned char *)malloc(new_image->height * new_image-> width);
+    int i;
+    for (i = 0; i < new_image->height; i++){
+        memcpy(new_image->bin_array + i*new_image->width,
+                image->bin_array + (pos_start[0]+i)*image->width + pos_start[1],
+                new_image->width * sizeof(unsigned char));
+    }
+    return new_image;
+}
 
-///Function used to acess a specific pixel within a Binary Image
-unsigned char access_pixel(BinaryImage image, int line, int col);
+unsigned char access_bin_pixel(BinaryImage *image, int line, int col){
+    return *(image->bin_array + (line*image->width + col));
+}
 
-///Function used to acess a subsection of image
-BinaryImage get_subsection(BinaryImage image, int *pos_start, int *pos_end);
-
-/********************************************/ /**
- *  FUNCTION DEFINITIONS
- ***********************************************/
-int save_to_file(char *file_name, BinaryImage *image){
+int save_to_bin_file(char *file_name, BinaryImage *image){
     FILE *fp;
 
     fp = fopen(file_name, "wb");
@@ -52,12 +37,15 @@ int save_to_file(char *file_name, BinaryImage *image){
     fprintf(fp, "P4\n");
     fprintf(fp, "%d %d\n", image->width, image->height);
 
-    fwrite(image->bin_array, image->width, image->height, fp);
+    printf("P4\n");
+    printf("%d %d\n", image->width, image->height);
 
+    fwrite(image->bin_array, image->width, image->height, fp);
+    fclose(fp);
     return 0;
 }
 
-BinaryImage* load_file(char *file_name){
+BinaryImage* load_bin_file(char *file_name){
     FILE *fp;
     int comments;
     char img_type[8];
@@ -94,7 +82,7 @@ BinaryImage* load_file(char *file_name){
     while (fgetc(fp) != '\n')
         ; //Remove blank spaces
 
-    fread(image->bin_array, image->width, image->height, fp);
+    fread(image->bin_array, 1, image->height*image->width, fp);
 
    /* int error;
     if ((error = fread(image->bin_array, image->width, image->height, fp)) != image->height)
@@ -106,9 +94,13 @@ BinaryImage* load_file(char *file_name){
     fclose(fp);
     return image;
 }
-
+/*
 int main()
 {
-	BinaryImage *image = load_file("../marbles.pbm");
-    return save_to_file("marbles.pbm", image);
-}
+	BinaryImage *image = load_bin_file("../marbles.pbm");
+    int start[] = {0,3}, end[] = {image->height/2,image->width - 1};
+    //int start_2[] = {0,0}, end_2[] = {450, 450};
+    save_to_bin_file("subsection_ag.pbm", get_bin_subsection(image,start,end));
+    //save_to_bin_file("subsection_ag_2.pbm", get_bin_subsection(image,start_2,end_2));
+    return save_to_bin_file("apollonian_gasket.pbm", image);
+}*/
