@@ -940,14 +940,6 @@ int main()
                     break;
                 }
 
-                puts("\nType down a path to save your image to: ");
-                char file_path[256];
-                if (!scanf(" %s", file_path))
-                {
-                    fprintf(stderr, "ERROR: Something went wrong reading your input\n");
-                    exit(1);
-                }
-
                 RGB_TO_GRAY_IMAGES = convert_rgb_to_three_grayscale(RGB_IMAGE);
                 for(int i = 0 ; i < 3 ; i++){
                     if (i == 0) puts("\nType down a path to save your RED grayscale converison image to: ");
