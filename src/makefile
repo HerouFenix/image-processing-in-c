@@ -12,10 +12,15 @@ clean:
 	rm -f process_grayscale.o
 	rm -f process_rgb.o
 
+<<<<<<< HEAD
 all: image_processing process_grayscale process_binary process_rgb main
+=======
+all: image_processing process_grayscale process_binary process_rgb
+>>>>>>> 0d047626b7fb87c54a52aa7190958a15aecc5ca4
 
 run_all:	all
-	
+	@echo Run all demonstration programs
+	./image_processing
 
 	@echo Run all demonstration programs
 	./process_grayscale
@@ -25,9 +30,6 @@ run_all:	all
 
 	@echo Run all demonstration programs
 	./process_rgb
-
-	@echo Run all demonstration programs
-	./image_processing
 
 	@echo Done	# note the @ at the beginning (make will not print the command)
 
@@ -53,7 +55,3 @@ process_binary:	process_binary.c process_binary.h
 
 process_rgb:	process_rgb.c process_rgb.h
 	gcc -Wall -O2 process_rgb.c -o $@ -lm
-
-image_processing:	 image_processing.c process_grayscale.h process_rgb.h
-	gcc -Wall -O2 image_processing.c process_grayscale.o process_rgb.o -o $@ -lm
-

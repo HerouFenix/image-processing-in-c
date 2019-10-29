@@ -36,4 +36,18 @@ BinaryImage* load_bin_file(char *file_name);
 unsigned char access_bin_pixel(BinaryImage *image, int line, int col);
 
 ///Function used to acess a subsection of image
+/********************************************/ /**
+ * Function used to access a subsection of image
+ * 
+ * @param image A pointer to a binary image to be copied
+ * @param pos_start The position where the subsection must start
+ * @param pos_end The position where the subsection must end
+************************************************/
 BinaryImage *get_bin_subsection(BinaryImage *image, int *pos_start, int *pos_end);
+
+/********************************************/ /**
+ * Function used to fully copy to memory an existing Binary Image
+ * 
+ * @param image A pointer to a binary image to be copied
+************************************************/
+BinaryImage *copy_binary_image(BinaryImage *image);
