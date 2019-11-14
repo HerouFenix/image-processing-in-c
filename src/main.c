@@ -259,7 +259,7 @@ int main()
                     exit(1);
                 }
 
-                save_binary_to_file(file_path, BIN_IMAGE); //Save Image
+                save_to_bin_file(file_path, BIN_IMAGE); //Save Image
                 increment_binary_operations("  Saved   ");
                 printf("\nSuccessfully saved Binary Image to %s\n", file_path);
             }
@@ -1244,7 +1244,7 @@ int main()
                     exit(1);
                 }
 
-                unsigned char pixel = get_binary_pixel(BIN_IMAGE,pos[0],pos[1]);
+                unsigned char pixel = access_bin_pixel(BIN_IMAGE,pos[0],pos[1]);
 
                 printf("Bool: %u\n", pixel);
                 printf("\nSuccessfully gathered Binary pixel's information\n");

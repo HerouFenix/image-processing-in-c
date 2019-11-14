@@ -68,4 +68,4 @@ int apply_grayscale_filter(GrayscaleImage *image, double *kernel, int filter_dim
  * @param new_height The RGB image's new height
  * @param new_width The RGB image's new width
  ***********************************************/
-RGBImage* reduce_image(RGBImage* image, int new_height, int new_width){
+RGBImage* reduce_image(RGBImage* image, int new_height, int new_width);

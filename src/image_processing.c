@@ -154,6 +154,161 @@ RGBImage* reduce_image(RGBImage* image, int new_height, int new_width){
     return result;
 }
 
+int apply_rgb_filter(RGBImage *image, double *kernel, int filter_dimension[2])
+{
+    if (filter_dimension[0] % 2 == 0 || filter_dimension[1] % 2 == 0)
+    {
+        fprintf(stderr, "ERROR: The filter kernel's dimensions must be odd numbers!\n");
+        return 1;
+    }
+
+    int row_offset, col_offset, current_pixel_index, image_row, subsection_row, kernel_row, image_col, subsection_col, kernel_col, new_red, new_green, new_blue;
+    Colour new_pixel, current_pixel;
+    Colour *new_pixel_array;
+
+    row_offset = filter_dimension[0] / 2; //How many pixels to our left/right do we move from the central pixel
+    col_offset = filter_dimension[1] / 2; //How many pixels to our up/down do we move from the central pixel
+
+    new_pixel_array = (Colour *)malloc(sizeof(Colour) * image->width * image->height);
+
+    current_pixel_index = 0;
+    //We apply a filter by multiplying all pixels around a center pixel with its correspondant in the filter's kernel and summing all values up
+    //Iterate over all of the image's pixels
+    for (current_pixel_index = 0; current_pixel_index < image->height * image->width; current_pixel_index++)
+    {
+
+        image_col = current_pixel_index % image->height;
+        image_row = current_pixel_index / image->width;
+
+        new_pixel.R = 0;
+        new_pixel.G = 0;
+        new_pixel.B = 0;
+
+        new_red = 0;
+        new_green = 0;
+        new_blue = 0;
+
+        //Iterate over a subsection of the image around the current (central) pixel
+        kernel_row = 0;
+        for (subsection_row = image_row - row_offset; subsection_row <= image_row + row_offset; subsection_row++)
+        {
+            kernel_col = 0;
+            for (subsection_col = image_col - col_offset; subsection_col <= image_col + col_offset; subsection_col++)
+            {
+                current_pixel = get_rgb_pixel(image, subsection_row, subsection_col); //Our pixel in the original
+
+                new_red += current_pixel.R * kernel[kernel_row * filter_dimension[1] + kernel_col];
+                new_green += current_pixel.G * kernel[kernel_row * filter_dimension[1] + kernel_col];
+                new_blue += current_pixel.B * kernel[kernel_row * filter_dimension[1] + kernel_col];
+
+                kernel_col++;
+            }
+            kernel_row++;
+        }
+
+        if (new_red > 255)
+        {
+            new_red = 255;
+        }
+        else if (new_red < 0)
+        {
+            new_red = 0;
+        }
+
+        if (new_green > 255)
+        {
+            new_green = 255;
+        }
+        else if (new_green < 0)
+        {
+            new_green = 0;
+        }
+
+        if (new_blue > 255)
+        {
+            new_blue = 255;
+        }
+        else if (new_blue < 0)
+        {
+            new_blue = 0;
+        }
+
+        new_pixel.R = new_red;
+        new_pixel.G = new_green;
+        new_pixel.B = new_blue;
+
+        new_pixel_array[current_pixel_index] = new_pixel;
+    }
+
+    image->pixel_array = new_pixel_array;
+
+    return 0;
+}
+
+int apply_grayscale_filter(GrayscaleImage *image, double *kernel, int filter_dimension[2])
+{
+    if (filter_dimension[0] % 2 == 0 || filter_dimension[1] % 2 == 0)
+    {
+        fprintf(stderr, "ERROR: The filter kernel's dimensions must be odd numbers!\n");
+        return 1;
+    }
+
+    int row_offset, col_offset, current_pixel_index, image_row, subsection_row, kernel_row, image_col, subsection_col, kernel_col, new_gray;
+    Grayscale new_pixel, current_pixel;
+    Grayscale *new_pixel_array;
+
+    row_offset = filter_dimension[0] / 2; //How many pixels to our left/right do we move from the central pixel
+    col_offset = filter_dimension[1] / 2; //How many pixels to our up/down do we move from the central pixel
+
+    new_pixel_array = (Grayscale *)malloc(sizeof(Grayscale) * image->width * image->height);
+
+    current_pixel_index = 0;
+    //We apply a filter by multiplying all pixels around a center pixel with its correspondant in the filter's kernel and summing all values up
+    //Iterate over all of the image's pixels
+    for (current_pixel_index = 0; current_pixel_index < image->height * image->width; current_pixel_index++)
+    {
+        image_col = current_pixel_index % image->height;
+        image_row = current_pixel_index / image->width;
+
+        new_pixel.Gray = 0;
+
+        new_gray = 0;
+
+        //Iterate over a subsection of the image around the current (central) pixel
+        kernel_row = 0;
+        for (subsection_row = image_row - row_offset; subsection_row <= image_row + row_offset; subsection_row++)
+        {
+            kernel_col = 0;
+            for (subsection_col = image_col - col_offset; subsection_col <= image_col + col_offset; subsection_col++)
+            {
+                current_pixel = get_grayscale_pixel(image, subsection_row, subsection_col); //Our pixel in the original
+
+                new_gray += current_pixel.Gray * kernel[kernel_row * filter_dimension[1] + kernel_col];
+
+                kernel_col++;
+            }
+            kernel_row++;
+        }
+
+        if (new_gray > 255)
+        {
+            new_gray = 255;
+        }
+        else if (new_gray < 0)
+        {
+            new_gray = 0;
+        }
+
+        new_pixel.Gray = new_gray;
+
+        new_pixel_array[current_pixel_index] = new_pixel;
+    }
+
+    image->pixel_array = new_pixel_array;
+
+    return 0;
+}
+
 BinaryImage* convert_gray_to_bin_otsu(GrayscaleImage *image){
     int *histogram;
 
