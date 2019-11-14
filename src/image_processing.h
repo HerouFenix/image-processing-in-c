@@ -1,6 +1,11 @@
-/********************************************//**
- *  FUNCTION DECLARATIONS
- ***********************************************/
+
+/**
+ * @file
+ * @brief File containing methods that involve different types of image structures
+*/
+
+//FUNCTION DECLARATIONS
+ 
 /********************************************/ /**
  * Function used to create a grayscale image out of an rgb one by computing all of its r, g and b parameters
  *

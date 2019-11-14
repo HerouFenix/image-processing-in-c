@@ -1,3 +1,8 @@
+/**
+ * @file
+ * @brief File containing a Text-based Test interface for all of our modules' operations
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -245,7 +250,7 @@ int main()
             {
                 fflush(stdin);
 
-                if (LOADED_GRAY == 0)
+                if (LOADED_BIN == 0)
                 {
                     puts("\nERROR: You haven't loaded any Binary Images into memory!");
                     break;
@@ -902,6 +907,8 @@ int main()
                 exit(1);
             }
 
+            printf("%c\n", option);
+
             if (option == 'S')
             {
                 fflush(stdin);
@@ -925,7 +932,7 @@ int main()
                 increment_rgb_operations(" Adapted  ");
                 printf("\nSuccessfully converted RGB image to single Grayscale image and saved it to %s\n", file_path);
             }
-            else if (option == 'G')
+            else if (option == 'M')
             {
                 fflush(stdin);
 
@@ -933,14 +940,6 @@ int main()
                 {
                     puts("\nERROR: You haven't loaded any RGB Images into memory!");
                     break;
-                }
-
-                puts("\nType down a path to save your image to: ");
-                char file_path[256];
-                if (!scanf(" %s", file_path))
-                {
-                    fprintf(stderr, "ERROR: Something went wrong reading your input\n");
-                    exit(1);
                 }
 
                 RGB_TO_GRAY_IMAGES = convert_rgb_to_three_grayscale(RGB_IMAGE);
@@ -960,7 +959,8 @@ int main()
                     printf("\nSuccessfully converted one of the RGB Image's colours to a Grayscale image and saved it to %s\n", file_path);
                 }
                 
-            } else if (option == 'G'){
+            } 
+            else if (option == 'G'){
                 fflush(stdin);
 
                 if (LOADED_GRAY == 0)
@@ -977,7 +977,7 @@ int main()
                     exit(1);
                 }
                 unsigned char threshold;
-                if (!scanf(" %u", &threshold))
+                if (!scanf(" %hhu", &threshold))
                 {
                     fprintf(stderr, "ERROR: Something went wrong reading your input\n");
                     exit(1);
@@ -987,7 +987,7 @@ int main()
                 increment_binary_operations(" AdaptedG ");
                 printf("\nSuccessfully converted grayimage to binary with %u threshold and saved it to %s\n", threshold, file_path);
 
-            }else if (option == 'G'){
+            }else if (option == 'O'){
                 fflush(stdin);
 
                 if (LOADED_GRAY == 0)
@@ -1004,7 +1004,7 @@ int main()
                     exit(1);
                 }
                 GRAY_TO_BIN_OTSU = convert_gray_to_bin_otsu(GRAY_IMAGE);
-                save_to_bin_file(file_path, GRAY_TO_BIN_IMG);
+                save_to_bin_file(file_path, GRAY_TO_BIN_OTSU);
                 increment_binary_operations(" AdaptedO ");
                 printf("\nSuccessfully converted grayimage to binary with the Otsu algorithm and saved it to %s\n", file_path);
                 

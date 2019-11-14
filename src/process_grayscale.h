@@ -1,8 +1,15 @@
-/********************************************/ /**
- *  STRUCTURE DECLARATIONS
- ***********************************************/
-/// Structure used to represent Grayscale values
-/// Unsigned Char since we only need to specify values from 0 to 255, which can be done with 1 byte (which corresponds to the size of an unsigned char)
+/**
+ * @file
+ * @brief File containing Grayscale related methods and structures
+*/
+
+//STRUCTURE DECLARATIONS
+
+/// Structure used to represent Grayscale pixels
+/**
+ *  Unsigned Char since we only need to specify values 
+ * from 0 to 255, which can be done with 1 byte (which corresponds to the size of an unsigned char)
+*/
 typedef struct
 {
     unsigned char Gray;
@@ -20,9 +27,8 @@ typedef struct
     Grayscale *pixel_array;
 } GrayscaleImage;
 
-/********************************************/ /**
- *  FUNCTION DECLARATIONS
- ***********************************************/
+//FUNCTION DECLARATIONS
+
 /********************************************/ /**
  * Function used to save a Grayscale image to a file
  *
@@ -49,13 +55,13 @@ GrayscaleImage *load_grayscale_file(char *file_name);
  ***********************************************/
 Grayscale get_grayscale_pixel(GrayscaleImage *image, int line, int col);
 
-/********************************************/ /**
+/*
  * Function used to acess a subsection of image
  *
  * @param image The Grayscale image we want to subsect
  * @param pos_start An array containing the subsection's starting starting (left-top corner) x and y coordinates
  * @param pos_end An array containing the subsection's ending (bottom-right corner) x and y coordinates
- ***********************************************/
+*/
 GrayscaleImage *get_grayscale_subsection(GrayscaleImage *image, int pos_start[2], int pos_end[2]);
 
 /********************************************/ /**
@@ -64,7 +70,6 @@ GrayscaleImage *get_grayscale_subsection(GrayscaleImage *image, int pos_start[2]
  * @param image The Image we want to clone
  ***********************************************/
 GrayscaleImage *copy_grayscale_image(GrayscaleImage *image);
-
 
 /********************************************/ /**
  * Function used to change a Grayscale Image's intensity

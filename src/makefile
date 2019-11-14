@@ -34,8 +34,11 @@ run_all:	all
 # $@ gets replaced by the name of the target
 #
 
-image_processing:	 image_processing.c process_grayscale.h process_rgb.h
-	gcc -Wall -O2 image_processing.c process_grayscale.o process_rgb.o -o $@ -lm
+image_processing:	 image_processing.c process_grayscale.h process_rgb.h process_binary.h
+	gcc process_grayscale.c -c
+	gcc process_rgb.c -c
+	gcc process_binary.c -c
+	gcc -Wall -O2 image_processing.c process_grayscale.o process_rgb.o process_binary.o -o $@ -lm
 
 test:	test.c process_grayscale.h process_rgb.h process_binary.h image_processing.h
 	gcc process_grayscale.c -c

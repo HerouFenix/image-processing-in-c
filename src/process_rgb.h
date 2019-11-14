@@ -1,8 +1,15 @@
-/********************************************/ /**
- *  STRUCTURE DECLARATIONS
- ***********************************************/
-/// Structure used to represent RGB colours (pixels)
-/// Unsigned Char since we only need to specify values from 0 to 255, which can be done with 1 byte (which corresponds to the size of an unsigned char)
+/**
+ * @file
+ * @brief File containing RGB related methods and structures
+*/
+
+//STRUCTURE DECLARATIONS
+
+/// Structure used to represent RGB pixels
+/**
+ *  Unsigned Char since we only need to specify values from 0 to 255, 
+ * which can be done with 1 byte (which corresponds to the size of an unsigned char)
+*/
 typedef struct
 {
     unsigned char R;
@@ -22,9 +29,9 @@ typedef struct
     Colour *pixel_array;
 } RGBImage;
 
-/********************************************/ /**
- *  FUNCTION DECLARATIONS
- ***********************************************/
+
+//FUNCTION DECLARATIONS
+
 /********************************************/ /**
  * Function used to save an RGB image to a file
  *
